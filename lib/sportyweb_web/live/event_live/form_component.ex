@@ -47,6 +47,34 @@ defmodule SportywebWeb.EventLive.FormComponent do
             </.input_grid>
 
             <.input_grid class="pt-6">
+              <div class="col-span-12 md:col-span-3">
+                <.input
+                  field={@form[:event_type]}
+                  type="select"
+                  label="Event Typ"
+                  options={Event.get_valid_event_types()}
+                />
+              </div>
+
+
+              <div class="col-span-12 md:col-span-6">
+                <.input
+                  field={@form[:start_date]}
+                  type="datetime-local"
+                  label="Startdatum"
+                />
+              </div>
+
+              <div class="col-span-12 md:col-span-6">
+                <.input
+                  field={@form[:end_date]}
+                  type="datetime-local"
+                  label="Enddatum"
+                />
+              </div>
+            </.input_grid>
+
+            <.input_grid class="pt-6">
               <div class="col-span-12 md:col-span-6">
                 <.input
                   field={@form[:minimum_participants]}

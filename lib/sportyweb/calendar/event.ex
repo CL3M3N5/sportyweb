@@ -47,6 +47,11 @@ defmodule Sportyweb.Calendar.Event do
     field :maximum_age_in_years, :integer, default: nil
     field :venue_type, :string, default: ""
     field :venue_description, :string, default: ""
+    field :event_type, :string, default: "single"
+    field :recurrence_rule, :map, default: nil
+    field :recurrence_exceptions, {:array, :utc_datetime}, default: []
+    field :start_date, :utc_datetime
+    field :end_date, :utc_datetime
 
     timestamps(type: :utc_datetime)
   end
@@ -67,6 +72,13 @@ defmodule Sportyweb.Calendar.Event do
     ]
   end
 
+  def get_valid_event_types do
+    [
+      [key: "Einzeltermin", value: "single"],
+      [key: "Wiederkehrend", value: "recurring"]
+    ]
+  end
+
   @doc false
   def changeset(event, attrs) do
     event
@@ -83,7 +95,12 @@ defmodule Sportyweb.Calendar.Event do
         :minimum_age_in_years,
         :maximum_age_in_years,
         :venue_type,
-        :venue_description
+        :venue_description,
+        :event_type,
+        :recurrence_rule,
+        :recurrence_exceptions,
+        :start_date,
+        :end_date
       ],
       empty_values: ["", nil]
     )
@@ -97,7 +114,12 @@ defmodule Sportyweb.Calendar.Event do
       :club_id,
       :name,
       :status,
-      :venue_type
+      :venue_type,
+      :event_type,
+      :recurrence_rule,
+      :recurrence_exceptions,
+      :start_date,
+      :end_date
     ])
     |> update_change(:name, &String.trim/1)
     |> update_change(:reference_number, &String.trim/1)
@@ -139,6 +161,7 @@ defmodule Sportyweb.Calendar.Event do
       :venue_type,
       get_valid_venue_types() |> Enum.map(fn venue_type -> venue_type[:value] end)
     )
+
     |> validate_required_venue_type_condition()
     |> validate_length(:venue_description, max: 20_000)
   end

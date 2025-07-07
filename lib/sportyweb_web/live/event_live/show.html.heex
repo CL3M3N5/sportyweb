@@ -15,6 +15,12 @@
     <:item title="Status">
       {get_key_for_value(Event.get_valid_statuses(), @event.status)}
     </:item>
+    <:item title="Startdatum">
+      {format_date_field_dmy(@event.start_date)}
+    </:item>
+    <:item title="Enddatum">
+      {format_date_field_dmy(@event.end_date)}
+    </:item>
     <:item title="Beschreibung">
       {format_string_field(@event.description)}
     </:item>
