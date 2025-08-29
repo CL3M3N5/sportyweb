@@ -47,31 +47,140 @@ defmodule SportywebWeb.EventLive.FormComponent do
             </.input_grid>
 
             <.input_grid class="pt-6">
-              <div class="col-span-12 md:col-span-3">
+              <div class="col-span-12">
                 <.input
-                  field={@form[:event_type]}
+                  field={@form[:period_type]}
                   type="select"
-                  label="Event Typ"
-                  options={Event.get_valid_event_types()}
+                  label="Zeitraum-Typ"
+                  options={Event.get_valid_period_types()}
                 />
               </div>
+
+              <%= if @form[:period_type].value == "recurring" do %>
+                  <div class="col-span-12">
+                    <.input
+                      field={@form[:occurrence_type]}
+                      type="select"
+                      label="Art der Wiederholung"
+                      options={[{"Bitte auswählen", "select"}, {"Wöchentlich", "weekly"}, {"Monatlich", "monthly"}]}
+                    />
+                  </div>
+                  <%= if @form[:occurrence_type].value == "weekly" do %>
+                    <div class="col-span-12">
+                      <label class="block font-medium mb-2">Wochentage</label>
+                      <div class="flex flex-wrap gap-4">
+                        <%= for {label, value} <- [
+                              {"Montag", "mon"},
+                              {"Dienstag", "tue"},
+                              {"Mittwoch", "wed"},
+                              {"Donnerstag", "thu"},
+                              {"Freitag", "fri"},
+                              {"Samstag", "sat"},
+                              {"Sonntag", "sun"}
+                            ] do %>
+                          <label class="inline-flex items-center mr-4">
+                            <input
+                              type="checkbox"
+                              name="event[recurrence_weekdays][]"
+                              value={value}
+
+                              class="form-checkbox"
+                            />
+                            <span class="ml-2">{label}</span>
+                          </label>
+                        <% end %>
+                      </div>
+                    </div>
+                  <% end %>
+                  <%= if @form[:occurrence_type].value == "monthly" do %>
+                    <div class="col-span-12">
+                      <label class="block font-medium mb-2">Monatliche Wiederholung</label>
+                      <div class="flex flex-col gap-2">
+                        <label>
+                          <input
+                            type="radio"
+                            name="event[recurrence_monthly_type]"
+                            value="day_of_month"
+                            checked={ (Map.get(@form.params, "recurrence_monthly_type") || @form[:recurrence_monthly_type].value) == "day_of_month" }
+                          />
+                          Am
+                          <input type="number" min="1" max="31" name="event[recurrence_monthly_day]" value={@form[:recurrence_monthly_day].value || ""} class="w-16 mx-2" />
+                          Tag des Monats
+                        </label>
+
+                      </div>
+                      <br>
+                      <div class="flex flex-col gap-2">
+                        <label>
+                          <input
+                            type="radio"
+                            name="event[recurrence_monthly_type]"
+                            value="weekday_of_month"
+                            checked={ (Map.get(@form.params, "recurrence_monthly_type") || @form[:recurrence_monthly_type].value) == "weekday_of_month" }
+                          />
+
+                          Am
+                          <select name="event[recurrence_monthly_nth]" class="mx-1">
+                            <option value="1" selected={@form[:recurrence_monthly_nth].value == "1"}>ersten</option>
+                            <option value="2" selected={@form[:recurrence_monthly_nth].value == "2"}>zweiten</option>
+                            <option value="3" selected={@form[:recurrence_monthly_nth].value == "3"}>dritten</option>
+                            <option value="4" selected={@form[:recurrence_monthly_nth].value == "4"}>vierten</option>
+                            <option value="-1" selected={@form[:recurrence_monthly_nth].value == "-1"}>letzten</option>
+                          </select>
+                          <select name="event[recurrence_monthly_weekday]" class="mx-1">
+                            <%= for {label, value} <- [
+                                  {"Montag", "mon"},
+                                  {"Dienstag", "tue"},
+                                  {"Mittwoch", "wed"},
+                                  {"Donnerstag", "thu"},
+                                  {"Freitag", "fri"},
+                                  {"Samstag", "sat"},
+                                  {"Sonntag", "sun"}
+                                ] do %>
+                              <option value={value} selected={@form[:recurrence_monthly_weekday].value == value}><%= label %></option>
+                            <% end %>
+                          </select>
+                          im Monat
+                        </label>
+                      </div>
+                    </div>
+                  <% end %>
+              <% end %>
 
 
               <div class="col-span-12 md:col-span-6">
                 <.input
                   field={@form[:start_date]}
-                  type="datetime-local"
+                  type="date"
                   label="Startdatum"
                 />
               </div>
 
               <div class="col-span-12 md:col-span-6">
                 <.input
+                  field={@form[:start_time]}
+                  type="time"
+                  label="Startzeit"
+                />
+              </div>
+
+              <div class="col-span-12 md:col-span-6">
+                <.input
                   field={@form[:end_date]}
-                  type="datetime-local"
+                  type="date"
                   label="Enddatum"
                 />
               </div>
+
+              <div class="col-span-12 md:col-span-6">
+                <.input
+                  field={@form[:end_time]}
+                  type="time"
+                  label="Endzeit"
+                />
+              </div>
+
+
             </.input_grid>
 
             <.input_grid class="pt-6">

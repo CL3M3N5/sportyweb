@@ -14,11 +14,19 @@ defmodule Sportyweb.Repo.Migrations.CreateEvents do
       add :maximum_age_in_years, :integer, null: true
       add :venue_type, :string, null: false
       add :venue_description, :text, null: false
-      add :event_type, :string, null: false, default: "single"
+      add :start_date, :date, null: true
+      add :end_date, :date, null: true
+      add :start_time, :time, null: true
+      add :end_time, :time, null: true
+      add :period_type, :string, null: false, default: "single"
+      add :occurrence_type, :string, null: true
       add :recurrence_rule, :map, null: true
       add :recurrence_exceptions, {:array, :utc_datetime}, default: []
-      add :start_date, :utc_datetime, null: true
-      add :end_date, :utc_datetime, null: true
+      add :recurrence_weekdays, {:array, :string}, default: []
+      add :recurrence_monthly_type, :string, null: true
+      add :recurrence_monthly_day, :integer, null: true
+      add :recurrence_monthly_nth, :integer, null: true
+      add :recurrence_monthly_weekday, :string, null: true
       add :club_id, references(:clubs, on_delete: :delete_all, type: :binary_id), null: false
 
       timestamps(type: :utc_datetime)
