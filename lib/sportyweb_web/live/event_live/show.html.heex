@@ -83,3 +83,22 @@
     <p>Bisher wurde noch keine veranstaltungsspezifische Gebühr erstellt.</p>
   <% end %>
 </.card>
+
+<.header level="2" class="mt-12">
+  Teilnehmer
+  <:actions>
+    <.link navigate={~p"/events/#{@event}/contacts/new"}>
+      <.button>Teilnehmer hinzufügen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@event.contacts) do %>
+    <SportywebWeb.ContactLive.IndexTableComponent.render contacts={@event.contacts} />
+  <% else %>
+    <p>
+      Die Veranstaltung hat noch keine Teilnehmer.
+    </p>
+  <% end %>
+</.card>

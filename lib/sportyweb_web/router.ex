@@ -103,6 +103,9 @@ defmodule SportywebWeb.Router do
       live "/events/:id/fees", EventLive.FeeNew, :index
       live "/events/:id/fees/new", EventLive.FeeNew, :new
 
+      live "/events/:id/contacts", EventLive.ContactNew, :index
+      live "/events/:id/contacts/new", EventLive.ContactNew, :new
+
       # Departments (Each belongs to a club)
 
       live "/departments", DepartmentLive.Index, :index_root

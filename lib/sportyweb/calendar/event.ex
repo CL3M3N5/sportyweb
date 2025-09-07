@@ -14,7 +14,9 @@ defmodule Sportyweb.Calendar.Event do
   alias Sportyweb.Calendar.EventPhone
   alias Sportyweb.Calendar.EventPostalAddress
   alias Sportyweb.Calendar.EventLocation
+  alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Finance.Fee
+  alias Sportyweb.Personal.Contact
   alias Sportyweb.Organization.Club
   alias Sportyweb.Organization.Department
   alias Sportyweb.Organization.Group
@@ -23,10 +25,12 @@ defmodule Sportyweb.Calendar.Event do
   alias Sportyweb.Polymorphic.Phone
   alias Sportyweb.Polymorphic.PostalAddress
 
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "events" do
     belongs_to :club, Club
+    many_to_many :contacts, Contact, join_through: EventContact
     many_to_many :departments, Department, join_through: EventDepartment
     many_to_many :emails, Email, join_through: EventEmail
     many_to_many :equipment, Equipment, join_through: EventEquipment
@@ -36,6 +40,7 @@ defmodule Sportyweb.Calendar.Event do
     many_to_many :phones, Phone, join_through: EventPhone
     many_to_many :postal_addresses, PostalAddress, join_through: EventPostalAddress
     many_to_many :locations, Location, join_through: EventLocation
+
 
     field :name, :string, default: ""
     field :reference_number, :string, default: ""
