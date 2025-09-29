@@ -156,4 +156,21 @@ defmodule Sportyweb.Calendar do
       fee_id: fee.id
     })
   end
+
+  @doc """
+  Gets a single event with participants (contacts).
+  Raises `Ecto.NoResultsError` if the Event does not exist.
+
+  ## Examples
+
+      iex> get_event_with_participants!(123)
+      %Event{}
+
+  """
+
+  def get_event_with_participants!(id) do
+    Event
+    |> Repo.get!(id)
+    |> Repo.preload(event_contacts: [:contact])
+  end
 end

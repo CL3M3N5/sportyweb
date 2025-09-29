@@ -3,6 +3,7 @@ defmodule SportywebWeb.EventLive.Show do
 
   alias Sportyweb.Calendar
   alias Sportyweb.Calendar.Event
+  alias Sportyweb.Calendar.EventContact
 
   @impl true
   def mount(_params, _session, socket) do
@@ -20,13 +21,15 @@ defmodule SportywebWeb.EventLive.Show do
         :postal_addresses,
         :locations,
         :contacts,
-        fees: :internal_events
+        fees: :internal_events,
+        event_contacts: [:contact]
       ])
 
     {:noreply,
      socket
      |> assign(:page_title, "Veranstaltung: #{event.name}")
      |> assign(:event, event)
+     |> assign(:event_contacts, event.event_contacts)
      |> assign(:club, event.club)}
   end
 end

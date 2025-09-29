@@ -3,7 +3,8 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
 
   import Ecto.Query, only: [from: 2]
   alias Sportyweb.Repo
-  alias Sportyweb.Calendar.{Event, EventContact}
+  alias Sportyweb.Calendar.Event
+  alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Personal.Contact
 
   @impl true
@@ -23,10 +24,16 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
   end
 
   @impl true
-  def mount(_params, _session, socket), do: {:ok, socket}
+  def mount(_params, _session, socket) do
+    {:ok, assign(socket, :event_navigation_current_item, :calendar)}
+  end
 
   @impl true
-  def handle_params(%{"id" => event_id}, _uri, socket) do
+  def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :new, %{"id" => event_id}) do
     event = Repo.get!(Event, event_id)
 
     already_ids =
@@ -41,10 +48,19 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
       )
       |> Repo.all()
 
-    {:noreply,
-     socket
-     |> assign(:page_title, "Teilnehmer hinzufügen")
-     |> assign(:event, event)
-     |> assign(:contact_options, contact_options)}
+    socket
+    |> assign(:page_title, "Teilnehmer hinzufügen")
+    |> assign(:event, event)
+    |> assign(:contact_options, contact_options)
+  end
+
+  defp apply_action(socket, :delete, %{"event_contact_id" => ec_id} ) do
+    eventcontactid = Repo.get!(EventContact, ec_id)
+    {:ok, _} = Repo.delete(eventcontactid)
+    event_id = eventcontactid.event_id
+
+    socket
+    |> put_flash(:info, "Teilnehmer erfolgreich gelöscht")
+    |> push_navigate(to: "/events/#{event_id}")
   end
 end

@@ -95,7 +95,7 @@
 
 <.card>
   <%= if Enum.any?(@event.contacts) do %>
-    <SportywebWeb.ContactLive.IndexTableComponent.render contacts={@event.contacts} />
+    <SportywebWeb.ParticipantLive.IndexTableComponent.render  event_contacts={@event_contacts} />
   <% else %>
     <p>
       Die Veranstaltung hat noch keine Teilnehmer.

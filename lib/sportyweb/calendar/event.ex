@@ -30,6 +30,8 @@ defmodule Sportyweb.Calendar.Event do
   @foreign_key_type :binary_id
   schema "events" do
     belongs_to :club, Club
+    has_many :event_contacts, Sportyweb.Calendar.EventContact, on_delete: :delete_all
+    has_many :participants, through: [:event_contacts, :contact]
     many_to_many :contacts, Contact, join_through: EventContact
     many_to_many :departments, Department, join_through: EventDepartment
     many_to_many :emails, Email, join_through: EventEmail

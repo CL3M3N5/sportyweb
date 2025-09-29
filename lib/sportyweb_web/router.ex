@@ -105,7 +105,10 @@ defmodule SportywebWeb.Router do
 
       live "/events/:id/participants", ParticipantLive.Index, :index
       live "/events/:id/participants/new", ParticipantLive.NewEdit, :new
-      live "/events/:id/participants/edit", ParticipantLive.NewEdit, :edit
+
+      # Participants (Each belongs to an event)
+
+      live "/participant/:event_contact_id/delete", ParticipantLive.NewEdit, :delete
 
       # Departments (Each belongs to a club)
 
