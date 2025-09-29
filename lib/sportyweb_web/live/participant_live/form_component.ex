@@ -1,4 +1,4 @@
-defmodule SportywebWeb.EventLive.ContactFormComponent do
+defmodule SportywebWeb.ParticipantLive.FormComponent do
   use SportywebWeb, :live_component
 
   alias Sportyweb.Repo

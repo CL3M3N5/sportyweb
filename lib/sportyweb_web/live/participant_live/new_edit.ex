@@ -1,4 +1,4 @@
-defmodule SportywebWeb.EventLive.ContactNew do
+defmodule SportywebWeb.ParticipantLive.NewEdit do
   use SportywebWeb, :live_view
 
   import Ecto.Query, only: [from: 2]
@@ -11,7 +11,7 @@ defmodule SportywebWeb.EventLive.ContactNew do
     ~H"""
     <div>
       <.live_component
-        module={SportywebWeb.EventLive.ContactFormComponent}
+        module={SportywebWeb.ParticipantLive.FormComponent}
         id="contact-form"
         title={@page_title}
         event={@event}
