@@ -56,7 +56,7 @@ defmodule Sportyweb.Calendar.Event do
     field :venue_description, :string, default: ""
     field :period_type, :string, default: "single"
     field :occurrence_type, :string, default: ""
-    field :recurrence_rule, :map, default: nil
+    field :recurrence_rule, :string, default: ""
     field :recurrence_exceptions, {:array, :utc_datetime}, default: []
     field :recurrence_weekdays, {:array, :string}, default: []
     field :recurrence_monthly_type, :string, default: ""
@@ -96,6 +96,7 @@ defmodule Sportyweb.Calendar.Event do
 
   def get_valid_recurrence_types do
     [
+      [key: "täglich", value: "daily"],
       [key: "wöchentlich", value: "weekly"],
       [key: "monatlich", value: "monthly"],
       [key: "jährlich", value: "yearly"]
@@ -201,8 +202,7 @@ defmodule Sportyweb.Calendar.Event do
     )
 
     |> validate_recurrence_fields()
-
-    |> put_recurrence_rule()
+    |> create_recurrence_rule()
 
   end
 
@@ -257,56 +257,150 @@ defmodule Sportyweb.Calendar.Event do
     end
   end
 
+  defp build_start_datetime(cs) do
+    case {get_field(cs, :start_date), get_field(cs, :start_time)} do
+      {%Date{} = d, %Time{} = t} -> {:ok, NaiveDateTime.new!(d, t)}
+      _ -> :error
+    end
+  end
 
-  defp put_recurrence_rule(changeset) do
-    # If the period_type is "recurring", we need to create a recurrence rule.
-    # The rule is based on the start_date and the recurrence type (weekly or monthly).
-    # If the recurrence type is not set, we do not create a rule.
+
+
+  defp weekday_str_to_atom(s) when is_binary(s) do
+    # Convert a string like "mon", "tue", etc. to the corresponding atom :monday, :tuesday, etc.
+    # Change alle Strings to lowercase to ensure case-insensitivity
+    case String.downcase(String.trim(s)) do
+      "mon" -> :monday
+      "tue" -> :tuesday
+      "wed" -> :wednesday
+      "thu" -> :thursday
+      "fri" -> :friday
+      "sat" -> :saturday
+      "sun" -> :sunday
+      _ -> nil
+    end
+  end
+
+  defp weekday_atom_to_rrule_str(:monday), do: "MO"
+  defp weekday_atom_to_rrule_str(:tuesday), do: "TU"
+  defp weekday_atom_to_rrule_str(:wednesday), do: "WE"
+  defp weekday_atom_to_rrule_str(:thursday), do: "TH"
+  defp weekday_atom_to_rrule_str(:friday), do: "FR"
+  defp weekday_atom_to_rrule_str(:saturday), do: "SA"
+  defp weekday_atom_to_rrule_str(:sunday), do: "SU"
+  defp weekday_atom_to_rrule_str(_), do: nil
+
+  defp create_recurrence_rule(changeset) do
+    require Logger
+    # Create the recurrence_rule field based on the other recurrence fields.
+
     if get_field(changeset, :period_type) == "recurring" do
-      start_date = get_field(changeset, :start_date)
       occurrence_type = get_field(changeset, :occurrence_type)
-      # Ensure start_date is a Date struct
-      cond do
-        occurrence_type == "weekly" and
-          is_struct(start_date, Date) and
-          is_list(get_field(changeset, :recurrence_weekdays)) and
-          length(get_field(changeset, :recurrence_weekdays)) > 0 ->
+      with {:ok, start_datetime} <- build_start_datetime(changeset) do
+        Logger.debug("Start der rrule Erstellung")
+        until_opt =
+          case get_field(changeset, :end_date) do
+            %Date{} = d ->
+              ndt = NaiveDateTime.new!(d, get_field(changeset, :end_time) || ~T[00:00:00])
+              [until: ndt]
+            _ -> []
+          end
 
-          rule = Cocktail.Rule.new(
-            start_date: start_date,
-            frequency: :weekly,
-            days: Enum.map(get_field(changeset, :recurrence_weekdays), &String.downcase/1)
-          )
-          put_change(changeset, :recurrence_rule, Cocktail.Rule.serialize(rule))
+        schedule =
+          case occurrence_type do
+            "daily" ->
+              Logger.debug("daily")
+              Cocktail.Schedule.new(start_datetime)
+              |> Cocktail.Schedule.add_recurrence_rule(:daily, until_opt)
 
-        occurrence_type == "monthly" and
-          is_struct(start_date, Date) and
-          get_field(changeset, :recurrence_monthly_type) == "day_of_month" and
-          not is_nil(get_field(changeset, :recurrence_monthly_day)) ->
+            "weekly" ->
+              Logger.debug("weekly")
+              days =
+                changeset
+                |> get_field(:recurrence_weekdays)
+                |> List.wrap()
+                |> Enum.map(&weekday_str_to_atom/1)
+                |> Enum.reject(&is_nil/1)
+              Logger.debug("#{inspect(days)}")
+              if days == [] do
+                Logger.debug("Keine Tage vorhanden #{inspect(get_field(changeset, :recurrence_weekdays))}")
+                nil
+              else
+                Cocktail.Schedule.new(start_datetime)
+                |> Cocktail.Schedule.add_recurrence_rule(:weekly, Keyword.merge([days: days], until_opt))
+              end
 
-          rule = Cocktail.Rule.new(
-            start_date: start_date,
-            frequency: :monthly
-          )
-          rule = Cocktail.Rule.day_of_month(rule, [get_field(changeset, :recurrence_monthly_day)])
-          put_change(changeset, :recurrence_rule, Cocktail.Rule.serialize(rule))
+            "monthly" ->
+              #Logger.debug("monthly")
+              monthly_type = get_field(changeset, :recurrence_monthly_type)
+              case monthly_type do
+                "day_of_month" ->
+                  day = get_field(changeset, :recurrence_monthly_day)
+                  Logger.debug("monthly day_of_month #{inspect(day)}")
+                  if is_integer(day) do
+                    Cocktail.Schedule.new(start_datetime)
+                    |> Cocktail.Schedule.add_recurrence_rule(:monthly, Keyword.merge([days_of_month: [day]], until_opt))
+                  else
+                    Logger.debug("Keine Tage vorhanden #{inspect(get_field(changeset, :recurrence_monthly_day))}")
+                    nil
+                  end
+                "weekday_of_month" ->
+                  nth = get_field(changeset, :recurrence_monthly_nth)
+                  weekday = get_field(changeset, :recurrence_monthly_weekday)
+                  weekday_atom = weekday_str_to_atom(weekday)
+                  Logger.debug("monthly weekday_of_month #{inspect({nth, weekday, weekday_atom})}")
+                  ical_day = weekday_atom_to_rrule_str(weekday_atom)
 
-        occurrence_type == "monthly" and
-          is_struct(start_date, Date) and
-          get_field(changeset, :recurrence_monthly_type) == "weekday_of_month" and
-          not is_nil(get_field(changeset, :recurrence_monthly_nth)) and
-          not is_nil(get_field(changeset, :recurrence_monthly_weekday)) ->
+                  until_clause =
+                    case Keyword.get(until_opt, :until) do
+                      %NaiveDateTime{} = ndt -> ";UNTIL=" <> Calendar.strftime(ndt, "%Y%m%dT%H%M%S")
+                      %DateTime{} = dt      -> ";UNTIL=" <> Calendar.strftime(dt, "%Y%m%dT%H%M%SZ")
+                      _ -> ""
+                    end
 
-          rule = Cocktail.Rule.new(
-            start_date: start_date,
-            frequency: :monthly
-          )
-          rule = Cocktail.Rule.day_of_week(rule, [
-            {String.downcase(get_field(changeset, :recurrence_monthly_weekday)), [get_field(changeset, :recurrence_monthly_nth)]}
-          ])
-          put_change(changeset, :recurrence_rule, Cocktail.Rule.serialize(rule))
+                  if is_integer(nth) and ical_day do
+                    "RRULE:FREQ=MONTHLY;BYDAY=#{Integer.to_string(nth)}#{ical_day}#{until_clause}"
+                  else
+                    Logger.debug("Keine Tage vorhanden #{inspect(get_field(changeset, :recurrence_monthly_weekday))}")
+                    nil
+                  end
+                _ -> nil
+              end
 
-        true ->
+            "yearly" ->
+              Logger.debug("yearly")
+              dmonth  = start_datetime.month
+              dday  = start_datetime.day
+
+              until_clause =
+                case Keyword.get(until_opt, :until) do
+                  %NaiveDateTime{} = ndt -> ";UNTIL=" <> Calendar.strftime(ndt, "%Y%m%dT%H%M%S")
+                  %DateTime{}     = dt  -> ";UNTIL=" <> Calendar.strftime(dt, "%Y%m%dT%H%M%SZ")
+                  _ -> ""
+                end
+
+              "RRULE:FREQ=YEARLY;BYMONTH=#{dmonth};BYMONTHDAY=#{dday}#{until_clause}"
+
+            _ -> nil
+          end
+
+        cond do
+          is_binary(schedule)  ->
+            # kurzfrsitig keine bessere Lösung gefunden
+            Logger.debug(schedule)
+            put_change(changeset, :recurrence_rule, schedule)
+          is_struct(schedule, Cocktail.Schedule) ->
+            rrule = Cocktail.Schedule.to_i_calendar_rrule(schedule)
+            Logger.debug(rrule)
+            put_change(changeset, :recurrence_rule, rrule)
+          true ->
+            changeset
+        end
+      else
+        {:error, _reason} = err ->
+          Logger.debug("build_start_datetime failed: #{inspect(err)}")
+          changeset
+        _ ->
           changeset
       end
     else

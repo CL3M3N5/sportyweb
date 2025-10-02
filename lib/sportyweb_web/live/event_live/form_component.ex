@@ -62,7 +62,7 @@ defmodule SportywebWeb.EventLive.FormComponent do
                       field={@form[:occurrence_type]}
                       type="select"
                       label="Art der Wiederholung"
-                      options={[{"Bitte auswählen", "select"}, {"Wöchentlich", "weekly"}, {"Monatlich", "monthly"}]}
+                      options={[{"Bitte auswählen", "select"}, {"Täglich", "daily"}, {"Wöchentlich", "weekly"}, {"Monatlich", "monthly"}, {"Jährlich", "yearly"}]}
                     />
                   </div>
                   <%= if @form[:occurrence_type].value == "weekly" do %>
@@ -83,7 +83,12 @@ defmodule SportywebWeb.EventLive.FormComponent do
                               type="checkbox"
                               name="event[recurrence_weekdays][]"
                               value={value}
-
+                              checked={
+                                Enum.member?(
+                                  List.wrap(@form[:recurrence_weekdays].value),
+                                  value
+                                )
+                              }
                               class="form-checkbox"
                             />
                             <span class="ml-2">{label}</span>
@@ -147,6 +152,21 @@ defmodule SportywebWeb.EventLive.FormComponent do
                   <% end %>
               <% end %>
 
+              <div class="col-span-12 md:col-span-6">
+                <.input
+                  field={@form[:start_time]}
+                  type="time"
+                  label="Startzeit"
+                />
+              </div>
+
+              <div class="col-span-12 md:col-span-6">
+                <.input
+                  field={@form[:end_time]}
+                  type="time"
+                  label="Endzeit"
+                />
+              </div>
 
               <div class="col-span-12 md:col-span-6">
                 <.input
@@ -158,27 +178,12 @@ defmodule SportywebWeb.EventLive.FormComponent do
 
               <div class="col-span-12 md:col-span-6">
                 <.input
-                  field={@form[:start_time]}
-                  type="time"
-                  label="Startzeit"
-                />
-              </div>
-
-              <div class="col-span-12 md:col-span-6">
-                <.input
                   field={@form[:end_date]}
                   type="date"
                   label="Enddatum"
                 />
               </div>
 
-              <div class="col-span-12 md:col-span-6">
-                <.input
-                  field={@form[:end_time]}
-                  type="time"
-                  label="Endzeit"
-                />
-              </div>
 
 
             </.input_grid>

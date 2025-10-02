@@ -20,7 +20,7 @@ defmodule Sportyweb.Repo.Migrations.CreateEvents do
       add :end_time, :time, null: true
       add :period_type, :string, null: false, default: "single"
       add :occurrence_type, :string, null: true
-      add :recurrence_rule, :map, null: true
+      add :recurrence_rule, :string, null: true
       add :recurrence_exceptions, {:array, :utc_datetime}, default: []
       add :recurrence_weekdays, {:array, :string}, default: []
       add :recurrence_monthly_type, :string, null: true
