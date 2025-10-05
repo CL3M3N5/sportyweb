@@ -32,6 +32,8 @@ defmodule Sportyweb.Calendar.Event do
     belongs_to :club, Club
     has_many :event_contacts, Sportyweb.Calendar.EventContact, on_delete: :delete_all
     has_many :participants, through: [:event_contacts, :contact]
+    has_many :event_locations, EventLocation, on_replace: :delete, on_delete: :delete_all
+    has_many :locations, through: [:event_locations, :location]
     many_to_many :contacts, Contact, join_through: EventContact
     many_to_many :departments, Department, join_through: EventDepartment
     many_to_many :emails, Email, join_through: EventEmail
@@ -41,7 +43,6 @@ defmodule Sportyweb.Calendar.Event do
     many_to_many :notes, Note, join_through: EventNote
     many_to_many :phones, Phone, join_through: EventPhone
     many_to_many :postal_addresses, PostalAddress, join_through: EventPostalAddress
-    many_to_many :locations, Location, join_through: EventLocation
 
 
     field :name, :string, default: ""
@@ -82,6 +83,7 @@ defmodule Sportyweb.Calendar.Event do
   def get_valid_venue_types do
     [
       [key: "Keine Angabe", value: "no_info"],
+      [key: "Standort des Clubs", value: "location"],
       [key: "Adresse", value: "postal_address"],
       [key: "Freifeld", value: "free_form"]
     ]
@@ -208,9 +210,11 @@ defmodule Sportyweb.Calendar.Event do
 
   defp validate_required_venue_type_condition(%Ecto.Changeset{} = changeset) do
     # Some fields are only required if the venue_type has a certain value.
+    require Logger
     case get_field(changeset, :venue_type) do
       "location" ->
-        changeset |> cast_assoc(:locations, required: true)
+        Logger.debug("params event_locations: #{inspect(changeset.params["event_locations"])}")
+        changeset |> cast_assoc(:event_locations, required: true, with: &Sportyweb.Calendar.EventLocation.changeset/2)
 
       "postal_address" ->
         changeset |> cast_assoc(:postal_addresses, required: true)
@@ -220,6 +224,7 @@ defmodule Sportyweb.Calendar.Event do
 
       _ ->
         changeset
+        Logger.debug("Keine Änderung")
     end
   end
 

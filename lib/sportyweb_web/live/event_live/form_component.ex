@@ -236,9 +236,9 @@ defmodule SportywebWeb.EventLive.FormComponent do
 
               <%= if @venue_type == "location" do %>
                 <div class="col-span-12">
-                  <.inputs_for :let={location} field={@form[:locations]}>
+                  <.inputs_for :let={location} field={@form[:event_locations]}>
                     <.input
-                      field={location[:id]}
+                      field={location[:location_id]}
                       type="select"
                       label="Standort"
                       options={Asset.list_locations(@event.club_id) |> Enum.map(&{&1.name, &1.id})}
