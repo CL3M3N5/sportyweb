@@ -30,8 +30,10 @@ defmodule Sportyweb.Calendar.Event do
   @foreign_key_type :binary_id
   schema "events" do
     belongs_to :club, Club
-    has_many :event_contacts, Sportyweb.Calendar.EventContact, on_delete: :delete_all
-    has_many :participants, through: [:event_contacts, :contact]
+    has_many :event_participants, EventContact, where: [role: "participant"], on_delete: :delete_all
+    has_many :event_organizers,  EventContact, where: [role: "organizer"], on_delete: :delete_all
+    has_many :participants, through: [:event_participants, :contact]
+    has_many :organizers, through: [:event_organizers, :contact]
     has_many :event_locations, EventLocation, on_replace: :delete, on_delete: :delete_all
     has_many :locations, through: [:event_locations, :location]
     many_to_many :contacts, Contact, join_through: EventContact
@@ -223,8 +225,8 @@ defmodule Sportyweb.Calendar.Event do
         changeset |> validate_required([:venue_description])
 
       _ ->
-        changeset
         Logger.debug("Keine Änderung")
+        changeset
     end
   end
 

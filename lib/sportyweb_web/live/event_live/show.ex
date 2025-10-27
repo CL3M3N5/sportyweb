@@ -20,16 +20,14 @@ defmodule SportywebWeb.EventLive.Show do
         :phones,
         :postal_addresses,
         :locations,
-        :contacts,
-        fees: :internal_events,
-        event_contacts: [:contact]
+        :participants,
+        fees: :internal_events
       ])
 
     {:noreply,
      socket
      |> assign(:page_title, "Veranstaltung: #{event.name}")
      |> assign(:event, event)
-     |> assign(:event_contacts, event.event_contacts)
      |> assign(:club, event.club)}
   end
 end

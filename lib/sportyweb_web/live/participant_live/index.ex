@@ -18,7 +18,7 @@ defmodule SportywebWeb.ParticipantLive.Index do
   defp load_event_with_participants(event_id) do
     Event
     |> Repo.get!(event_id)
-    |> Repo.preload(event_contacts: [:contact])
+    |> Repo.preload(event_participants: [:contact])
   end
 
   defp apply_action(socket, :index_root, _params) do
@@ -33,7 +33,7 @@ defmodule SportywebWeb.ParticipantLive.Index do
     socket
     |> assign(:page_title, "Teilnehmer")
     |> assign(:event, event)
-    |> assign(:event_contacts, event.event_contacts)
+    |> assign(:event_participants, event.participants)
     |> assign(:contact_options, [])
   end
 end

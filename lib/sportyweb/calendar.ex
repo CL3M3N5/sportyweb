@@ -8,6 +8,7 @@ defmodule Sportyweb.Calendar do
 
   alias Sportyweb.Calendar.Event
   alias Sportyweb.Calendar.EventFee
+  alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Finance.Fee
 
   @doc """
@@ -171,6 +172,23 @@ defmodule Sportyweb.Calendar do
   def get_event_with_participants!(id) do
     Event
     |> Repo.get!(id)
-    |> Repo.preload(event_contacts: [:contact])
+    |> Repo.preload([:organizers, :participants])
   end
+
+  def get_event_contact!(event_id, contact_id, role \\ "participant") do
+    Repo.get_by!(EventContact,
+      event_id: event_id,
+      contact_id: contact_id,
+      role: role
+    )
+  end
+
+  def delete_event_contact(%EventContact{} = ec) do
+    Repo.delete(ec)
+  end
+
+
+
+
+
 end

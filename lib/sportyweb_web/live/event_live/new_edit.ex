@@ -1,6 +1,8 @@
 defmodule SportywebWeb.EventLive.NewEdit do
   use SportywebWeb, :live_view
 
+  import Ecto.Query, only: [from: 2]
+  alias Sportyweb.Repo
   alias Sportyweb.Asset.Location
   alias Sportyweb.Calendar
   alias Sportyweb.Calendar.Event
@@ -10,6 +12,7 @@ defmodule SportywebWeb.EventLive.NewEdit do
   alias Sportyweb.Polymorphic.Note
   alias Sportyweb.Polymorphic.Phone
   alias Sportyweb.Polymorphic.PostalAddress
+  alias Sportyweb.Personal.Contact
 
   @impl true
   def render(assigns) do
@@ -37,9 +40,20 @@ defmodule SportywebWeb.EventLive.NewEdit do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  # Hilfsfunktion um Kontaktoptionen für ein bestimmtes Club zu laden
+  defp contact_options_for_club(club_id) do
+    from(c in Contact,
+      where: c.club_id == ^club_id,
+      order_by: [asc: c.person_last_name, asc: c.person_first_name_1],
+      select: {c.name, c.id}
+    )
+    |> Repo.all()
+  end
+
   defp apply_action(socket, :edit, %{"id" => id}) do
     event =
-      Calendar.get_event!(id, [:club, :emails, :phones, :postal_addresses, :notes, :event_locations])
+      Calendar.get_event!(id, [:club, :emails, :phones, :postal_addresses, :notes, :event_locations, :participants])
+    #contact_options = contact_options_for_club(event.club_id)
 
     socket
     |> assign(:page_title, "Veranstaltung bearbeiten")

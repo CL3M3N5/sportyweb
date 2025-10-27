@@ -3,6 +3,7 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
 
   import Ecto.Query, only: [from: 2]
   alias Sportyweb.Repo
+  alias Sportyweb.Calendar
   alias Sportyweb.Calendar.Event
   alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Personal.Contact
@@ -54,10 +55,9 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
     |> assign(:contact_options, contact_options)
   end
 
-  defp apply_action(socket, :delete, %{"event_contact_id" => ec_id} ) do
-    eventcontactid = Repo.get!(EventContact, ec_id)
-    {:ok, _} = Repo.delete(eventcontactid)
-    event_id = eventcontactid.event_id
+  defp apply_action( socket, :delete, %{"event_id" => event_id, "contact_id" => contact_id} ) do
+    event_contact = Calendar.get_event_contact!(event_id, contact_id, "participant")
+    {:ok, _} = Calendar.delete_event_contact(event_contact)
 
     socket
     |> put_flash(:info, "Teilnehmer erfolgreich gelöscht")
