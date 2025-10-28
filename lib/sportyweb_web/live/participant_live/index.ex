@@ -1,9 +1,8 @@
 defmodule SportywebWeb.ParticipantLive.Index do
   use SportywebWeb, :live_view
 
+  alias Sportyweb.Repo
   alias Sportyweb.Calendar.Event
-  alias Sportyweb.Calendar.EventContact
-  alias Sportyweb.Personal.Contact
 
   @impl true
   def mount(_params, _session, socket) do

@@ -4,7 +4,6 @@ defmodule Sportyweb.Calendar.Event do
   import SportywebWeb.CommonValidations
 
   alias Sportyweb.Asset.Equipment
-  alias Sportyweb.Asset.Location
   alias Sportyweb.Calendar.EventDepartment
   alias Sportyweb.Calendar.EventEmail
   alias Sportyweb.Calendar.EventEquipment

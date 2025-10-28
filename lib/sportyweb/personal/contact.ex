@@ -1,9 +1,7 @@
 defmodule Sportyweb.Personal.Contact do
   use Ecto.Schema
   import Ecto.Changeset
-  import Ecto.Query
 
-  alias Sportyweb.Repo
   alias Sportyweb.Calendar.Event
   alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Legal.Contract

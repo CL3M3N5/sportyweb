@@ -3,7 +3,6 @@ defmodule SportywebWeb.EventLive.Show do
 
   alias Sportyweb.Calendar
   alias Sportyweb.Calendar.Event
-  alias Sportyweb.Calendar.EventContact
 
   @impl true
   def mount(_params, _session, socket) do
