@@ -37,22 +37,40 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
   defp apply_action(socket, :new, %{"id" => event_id}) do
     event = Repo.get!(Event, event_id)
 
-    already_ids =
-      from(ec in EventContact, where: ec.event_id == ^event.id, select: ec.contact_id)
-      |> Repo.all()
+    current_participants =
+      from(ec in EventContact, where: ec.event_id == ^event.id)
+      |> Repo.aggregate(:count, :contact_id)
 
-    contact_options =
-      from(c in Contact,
-        where: c.club_id == ^event.club_id and c.id not in ^already_ids,
-        order_by: [asc: c.person_last_name, asc: c.person_first_name_1],
-        select: {c.name, c.id}  # simpel: Label = gespeicherter Name
-      )
-      |> Repo.all()
+    capacity = event.maximum_participants || :infinity
+    maximal_age = event.maximum_age_in_years
+    minimal_age = event.minimum_age_in_years || 0
+    today = DateTime.utc_now()
 
-    socket
-    |> assign(:page_title, "Teilnehmer hinzufügen")
-    |> assign(:event, event)
-    |> assign(:contact_options, contact_options)
+    if current_participants >= capacity do
+      socket
+      |> put_flash(:error, "Die maximale Teilnehmerzahl für diese Veranstaltung ist bereits erreicht.")
+      |> push_navigate(to: "/events/#{event.id}")
+    else
+
+      already_ids =
+        from(ec in EventContact, where: ec.event_id == ^event.id, select: ec.contact_id)
+        |> Repo.all()
+
+      contact_options =
+        from(c in Contact,
+          where: c.club_id == ^event.club_id and c.id not in ^already_ids,
+          where: fragment("date_part('year', age(?, ?))::int <= ?", ^today, c.person_birthday, ^maximal_age),
+          where: fragment("date_part('year', age(?, ?))::int >= ?", ^today, c.person_birthday, ^minimal_age),
+          order_by: [asc: c.person_last_name, asc: c.person_first_name_1],
+          select: {c.name, c.id}
+        )
+        |> Repo.all()
+
+      socket
+      |> assign(:page_title, "Teilnehmer hinzufügen")
+      |> assign(:event, event)
+      |> assign(:contact_options, contact_options)
+    end
   end
 
   defp apply_action( socket, :delete, %{"event_id" => event_id, "contact_id" => contact_id} ) do
