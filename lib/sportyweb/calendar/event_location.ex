@@ -21,8 +21,8 @@ defmodule Sportyweb.Calendar.EventLocation do
   @doc false
   def changeset(event_location, attrs) do
     event_location
-    |> cast(attrs, [:event_id, :location_id])
-    |> validate_required([:event_id, :location_id])
+    |> cast(attrs, [ :location_id])
+    |> validate_required([ :location_id]) # No need to validate event_id, as it is set by Ecto automatically
     |> unique_constraint(:location_id, name: "event_locations_event_id_location_id_index")
   end
 end
