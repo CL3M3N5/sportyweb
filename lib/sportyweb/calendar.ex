@@ -10,6 +10,7 @@ defmodule Sportyweb.Calendar do
   alias Sportyweb.Calendar.EventFee
   alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Finance.Fee
+  alias Sportyweb.Asset
 
   @doc """
   Returns a clubs list of events.
@@ -187,7 +188,24 @@ defmodule Sportyweb.Calendar do
     Repo.delete(ec)
   end
 
+  @doc """
+  Creates a event_equipment (many_to_many).
+  ## Examples
 
+      iex> create_event_equipment(event, equipment)
+      {:ok, %EventEquipment{}}
+
+      iex> create_event_equipment(event, equipment)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_event_equipment(%Event{} = event, %Asset.Equipment{} = equipment) do
+    Repo.insert(%Sportyweb.Calendar.EventEquipment{
+      event_id: event.id,
+      equipment_id: equipment.id
+    })
+  end
 
 
 

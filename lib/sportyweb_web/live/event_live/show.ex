@@ -20,6 +20,8 @@ defmodule SportywebWeb.EventLive.Show do
         :postal_addresses,
         :locations,
         :participants,
+        :equipment,
+        equipment: :fees,
         fees: :internal_events
       ])
 

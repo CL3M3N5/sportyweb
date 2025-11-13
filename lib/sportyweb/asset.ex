@@ -188,6 +188,33 @@ defmodule Sportyweb.Asset do
     Repo.preload(list_equipment(location_id), preloads)
   end
 
+    @doc """
+  Returns a locations list of equipment.
+
+  ## Examples
+
+      iex> list_equipments([1])
+      [%Equipment{}, ...]
+
+  """
+  def list_equipments(location_ids) do
+    query = from(e in Equipment, where: e.location_id in ^location_ids, order_by: e.name)
+    Repo.all(query)
+
+  end
+  @doc """
+  Returns a locations list of equipment. Preloads associations.
+
+  ## Examples
+
+      iex> list_equipment([1], [:location])
+      [%Equipment{}, ...]
+
+  """
+  def list_equipments(location_id, preloads) do
+    Repo.preload(list_equipments(location_id), preloads)
+  end
+
   @doc """
   Gets a single equipment.
 

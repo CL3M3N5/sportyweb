@@ -85,6 +85,23 @@
 </.card>
 
 <.header level="2" class="mt-12">
+  Equipment
+  <:actions>
+    <.link navigate={~p"/events/#{@event}/equipments/new"}>
+      <.button>Equipment hinzufügen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@event.equipment) do %>
+    <SportywebWeb.EquipmentLive.IndexTableComponent.render equipment={@event.equipment} event_id={@event.id} />
+  <% else %>
+    <p>Bisher wurde noch keine Equipment hinzugefügt.</p>
+  <% end %>
+</.card>
+
+<.header level="2" class="mt-12">
   Teilnehmer
   <:actions>
     <.link navigate={~p"/events/#{@event}/participants/new"}>
