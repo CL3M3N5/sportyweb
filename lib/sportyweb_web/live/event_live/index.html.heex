@@ -1,6 +1,12 @@
 <.header>
   {@page_title}
   <:actions>
+    <.link navigate={~p"/clubs/#{@club}/events/calendar"}>
+      <.button>
+        Kalenderansicht
+      </.button>
+    </.link>
+
     <.link navigate={~p"/clubs/#{@club}/events/new"}>
       <.button>Veranstaltung erstellen</.button>
     </.link>

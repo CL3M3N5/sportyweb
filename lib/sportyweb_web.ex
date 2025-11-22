@@ -93,6 +93,9 @@ defmodule SportywebWeb do
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
 
+      # Import LiveCalendar component for calendar rendering
+      import LiveCalendar.Components
+
       # Routes generation with the ~p sigil
       unquote(verified_routes())
     end

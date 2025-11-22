@@ -1,6 +1,7 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+@import "../../deps/calendar_component/priv/static/assets/main.css";
 
 /* ===== Fonts ============================ */
 
