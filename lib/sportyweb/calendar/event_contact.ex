@@ -14,7 +14,14 @@ defmodule Sportyweb.Calendar.EventContact do
 
   def changeset(event_contacts, attrs) do
     event_contacts
-    |> cast(attrs, [:event_id, :contact_id])
+    |> cast(
+      attrs,
+      [
+        :event_id,
+        :contact_id,
+        :role
+      ]
+    )
     |> validate_required([:event_id, :contact_id])
     |> validate_inclusion(:role, ["participant", "organizer"])
   end

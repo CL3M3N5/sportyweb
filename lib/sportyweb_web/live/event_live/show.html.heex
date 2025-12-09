@@ -102,6 +102,25 @@
 </.card>
 
 <.header level="2" class="mt-12">
+  Organisatoren 
+  <:actions>
+    <.link navigate={~p"/events/#{@event}/organizers/new"}>
+      <.button>Organisator hinzufügen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@event.organizers) do %>
+    <SportywebWeb.EventOrganizerLive.IndexTableComponent.render  organizers={@event.organizers} event_id={@event.id} />
+  <% else %>
+    <p>
+      Die Veranstaltung hat noch keine Organisatoren.
+    </p>
+  <% end %>
+</.card>
+
+<.header level="2" class="mt-12">
   Teilnehmer
   <:actions>
     <.link navigate={~p"/events/#{@event}/participants/new"}>

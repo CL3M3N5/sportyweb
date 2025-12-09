@@ -38,7 +38,10 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
     event = Repo.get!(Event, event_id)
 
     current_participants =
-      from(ec in EventContact, where: ec.event_id == ^event.id)
+      from(ec in EventContact,
+        where: ec.event_id == ^event.id,
+        where: ec.role == "participant"
+      )
       |> Repo.aggregate(:count, :contact_id)
 
     capacity = event.maximum_participants || :infinity
