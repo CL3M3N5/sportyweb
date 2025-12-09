@@ -5,6 +5,7 @@ defmodule SportywebWeb.EventLive.FormComponent do
   alias Sportyweb.Asset
   alias Sportyweb.Calendar
   alias Sportyweb.Calendar.Event
+  alias Sportyweb.Organization
 
   @impl true
   def render(assigns) do
@@ -264,6 +265,39 @@ defmodule SportywebWeb.EventLive.FormComponent do
             </.input_grid>
 
             <.input_grid class="pt-6">
+              <div class="col-span-12">
+                <.input
+                  field={@form[:department_id]}
+                  type="select"
+                  prompt="Keine Abteilung"
+                  label="Abteilung"
+                  options={
+                    Organization.list_departments(@event.club_id)
+                    |> Enum.map(&{&1.name, &1.id})
+                  }
+                />
+              </div>
+            </.input_grid>
+
+            <%= if @department_id do %>
+            <.input_grid class="pt-6">
+              <div class="col-span-12">
+                <.input
+                  field={@form[:group_id]}
+                  type="select"
+                  prompt="Keine Gruppe"
+                  label="Gruppe"
+                   options={
+                    Organization.list_groups(@department_id)
+                    |> Enum.map(&{&1.name, &1.id})
+                  }
+                />
+              </div>
+            </.input_grid>
+            <% end %>
+
+
+            <.input_grid class="pt-6">
               <SportywebWeb.PolymorphicLive.EmailsFormComponent.render form={@form} />
             </.input_grid>
 
@@ -301,6 +335,7 @@ defmodule SportywebWeb.EventLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:department_id, event.department_id)
      |> assign(:venue_type, event.venue_type)
      |> assign_new(:form, fn ->
        to_form(Calendar.change_event(event))
@@ -314,6 +349,7 @@ defmodule SportywebWeb.EventLive.FormComponent do
     {:noreply,
      socket
      |> assign(:venue_type, get_field(changeset, :venue_type))
+     |> assign(:department_id, get_field(changeset, :department_id))
      |> assign(form: to_form(changeset, action: :validate))}
   end
 

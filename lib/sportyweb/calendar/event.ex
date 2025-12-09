@@ -29,6 +29,8 @@ defmodule Sportyweb.Calendar.Event do
   @foreign_key_type :binary_id
   schema "events" do
     belongs_to :club, Club
+    belongs_to :department, Department
+    belongs_to :group, Group
     has_many :event_participants, EventContact, where: [role: "participant"], on_delete: :delete_all
     has_many :event_organizers,  EventContact, where: [role: "organizer"], on_delete: :delete_all
     has_many :participants, through: [:event_participants, :contact]
@@ -135,7 +137,9 @@ defmodule Sportyweb.Calendar.Event do
         :start_date,
         :end_date,
         :start_time,
-        :end_time
+        :end_time,
+        :department_id,
+        :group_id
       ],
       empty_values: ["", nil]
     )

@@ -49,6 +49,8 @@ defmodule SportywebWeb.EventLive.NewEdit do
   defp apply_action(socket, :new, %{"club_id" => club_id}) do
     club = Organization.get_club!(club_id)
     venue_type = socket.assigns[:venue_type] || nil
+    department_id = socket.assigns[:department_id] || nil
+    group_id = socket.assigns[:group_id] || nil
 
     socket
     |> assign(:page_title, "Veranstaltung erstellen")
@@ -56,6 +58,8 @@ defmodule SportywebWeb.EventLive.NewEdit do
       club_id: club.id,
       club: club,
       venue_type: venue_type,
+      department_id: department_id,
+      group_id: group_id,
       event_locations: [%Location{}],
       postal_addresses: [%PostalAddress{}],
       emails: [%Email{}],
