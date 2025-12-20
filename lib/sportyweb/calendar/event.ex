@@ -276,7 +276,7 @@ defmodule Sportyweb.Calendar.Event do
 
 
 
-  defp weekday_str_to_atom(s) when is_binary(s) do
+  def weekday_str_to_atom(s) when is_binary(s) do
     # Convert a string like "mon", "tue", etc. to the corresponding atom :monday, :tuesday, etc.
     # Change alle Strings to lowercase to ensure case-insensitivity
     case String.downcase(String.trim(s)) do
@@ -291,16 +291,16 @@ defmodule Sportyweb.Calendar.Event do
     end
   end
 
-  defp weekday_atom_to_rrule_str(:monday), do: "MO"
-  defp weekday_atom_to_rrule_str(:tuesday), do: "TU"
-  defp weekday_atom_to_rrule_str(:wednesday), do: "WE"
-  defp weekday_atom_to_rrule_str(:thursday), do: "TH"
-  defp weekday_atom_to_rrule_str(:friday), do: "FR"
-  defp weekday_atom_to_rrule_str(:saturday), do: "SA"
-  defp weekday_atom_to_rrule_str(:sunday), do: "SU"
-  defp weekday_atom_to_rrule_str(_), do: nil
+  def weekday_atom_to_rrule_str(:monday), do: "MO"
+  def weekday_atom_to_rrule_str(:tuesday), do: "TU"
+  def weekday_atom_to_rrule_str(:wednesday), do: "WE"
+  def weekday_atom_to_rrule_str(:thursday), do: "TH"
+  def weekday_atom_to_rrule_str(:friday), do: "FR"
+  def weekday_atom_to_rrule_str(:saturday), do: "SA"
+  def weekday_atom_to_rrule_str(:sunday), do: "SU"
+  def weekday_atom_to_rrule_str(_), do: nil
 
-  defp create_recurrence_rule(changeset) do
+  def create_recurrence_rule(changeset) do
     require Logger
     # Create the recurrence_rule field based on the other recurrence fields.
 

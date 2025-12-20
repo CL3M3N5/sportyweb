@@ -31,7 +31,8 @@ defmodule SportywebWeb.EventLive.CalendarComponent do
 
       <.card>
         <.calendar
-          id={@id || "interactive-calendar"}
+          id={"club-calendar"}
+          phx-update="ignore"
           events={@events}
           on_event_click={
             JS.push("event_clicked")
@@ -43,10 +44,7 @@ defmodule SportywebWeb.EventLive.CalendarComponent do
             |> JS.show(to: "#new-event-form")
             |> JS.focus(to: "#title")
           }
-          on_month_change={
-            JS.push("month_changed")
-            |> JS.dispatch("calendar:month_changed")
-          }
+          on_month_change={JS.push("month_changed")}
           options={%{
             view: "dayGridMonth",
             selectable: true,
@@ -58,29 +56,6 @@ defmodule SportywebWeb.EventLive.CalendarComponent do
 
       </.card>
     </div>
-      """
+    """
   end
-#  @impl true
-#  def handle_params(params, _url, socket) do
-#    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
-#  end
-
-#  @impl true
-#  def handle_event("event_clicked", %{"id" => id}, socket) do
-#    {:noreply,
-#    push_navigate(socket,
-#      to: ~p"/events/#{id}"
-#    )}
-#  end
-
-#  @impl true
-#  def handle_event("date_clicked", %{"date" => date}, socket), do: {:noreply, socket}
-
-#  @impl true
-#  def handle_event("month_changed", %{"month" => month, "year" => year}, socket), do: {:noreply, socket}
-
-
-
-
-
 end

@@ -39,6 +39,28 @@ defmodule Sportyweb.Calendar do
     Repo.preload(list_events(club_id), preloads)
   end
 
+    @doc """
+  Returns a clubs list of events between start time and end time.
+
+  ## Examples
+
+      iex> list_events(club_id, view_start_time, view_end_time)
+      [%Event{}, ...]
+
+  """
+  def list_events(club_id, view_start_time, view_end_time) do
+    query = from(e in Event,
+    where: e.club_id == ^club_id,
+    where: e.end_date >= ^view_start_time,
+    where: e.start_date <= ^view_end_time,
+    where: not is_nil(e.start_date),
+    where: not is_nil(e.end_date)
+    )
+
+    Repo.all(query)
+  end
+
+
   @doc """
   Gets a single event.
 
@@ -207,6 +229,116 @@ defmodule Sportyweb.Calendar do
     })
   end
 
+  @doc """
+  Get a list of appointment of a event for the calendar view.
+  ## Examples
+
+      iex> get_calendar_event(event)
+      {:ok, %Event{}}
+
+  """
+
+  def get_calendar_event(%Event{} = event) do
+    require Logger
+
+   if event.period_type == "recurring" do
+      {:ok, end_datetime} = NaiveDateTime.new(event.end_date, event.end_time)
+      {:ok, start_datetime} = NaiveDateTime.new(event.start_date, event.start_time)
+
+      cbase = Cocktail.Schedule.new(start_datetime)
+
+      schedule =
+        case event.occurrence_type do
+          "daily" ->
+            Cocktail.Schedule.add_recurrence_rule(cbase, :daily, until: end_datetime)
+
+          "weekly" ->
+            days = event.recurrence_weekdays
+              |> List.wrap()
+              |> Enum.map(&Sportyweb.Calendar.Event.weekday_str_to_atom/1)
+              |> Enum.reject(&is_nil/1)
+            Logger.debug("#{inspect(days)}")
+
+            Cocktail.Schedule.add_recurrence_rule(cbase, :weekly, days: days, until: end_datetime)
+
+          "monthly" ->
+
+              case event.recurrence_monthly_type do
+                "day_of_month" ->
+                  day = event.recurrence_monthly_day
+                  Logger.debug("monthly day_of_month #{inspect(day)}")
+                  if is_integer(day) do
+                    Cocktail.Schedule.add_recurrence_rule(cbase, :monthly, Keyword.merge([days_of_month: [day]], until: end_datetime))
+                  else
+                    Logger.debug("Keine Tage vorhanden #{inspect(event.recurrence_monthly_day)}")
+                    nil
+                  end
+                "weekday_of_month" ->
+                  nil
+
+                _ -> nil
+              end
+
+          "yearly" ->
+            # "Cocktail", the date recurrence library in use doesn't natively support a yearly frequency.
+            # Therefore, the interval might have to be converted from year to month via a multiplication by 12.
+            Cocktail.Schedule.add_recurrence_rule(cbase, :monthly, interval: 12,  until: end_datetime)
+          _ ->
+            nil
+        end
+
+      s =
+        case Time.to_seconds_after_midnight(event.start_time) do
+          sec when is_integer(sec) -> sec
+          {sec, _} when is_integer(sec) -> sec
+        end
+      e =
+        case Time.to_seconds_after_midnight(event.end_time) do
+          sec when is_integer(sec) -> sec
+          {sec, _} when is_integer(sec) -> sec
+        end
 
 
+      # Convert the occurrences to Date and filter them, so they only include dates in the range from start_date to end_date.
+      # Convert the stream to a list at the end, to make it easier to work with.
+      Cocktail.Schedule.occurrences(schedule)
+      |> Stream.filter(fn %NaiveDateTime{} = start_at ->
+        d = NaiveDateTime.to_date(start_at)
+        Date.compare(d, event.start_date) != :lt and Date.compare(d, event.end_date) != :gt
+      end)
+      |> Stream.map(fn %NaiveDateTime{} = start_at ->
+        end_at = NaiveDateTime.add(start_at, e - s, :second)
+        %{
+          id: event.id,
+          title: event.name,
+          start: NaiveDateTime.to_iso8601(start_at),
+          end: NaiveDateTime.to_iso8601(end_at)
+        }
+      end)
+    |> Enum.to_list()
+
+
+    else
+      starttime = case {event.start_date, event.start_time} do
+        {%Date{} = d, %Time{} = t} ->
+          {:ok, ndt}  = NaiveDateTime.new(d, t)
+          NaiveDateTime.to_iso8601(ndt)
+        _ -> nil
+      end
+      endtime = case {event.end_date, event.end_time} do
+        {%Date{} = d, %Time{} = t} ->
+          {:ok, ndt}  = NaiveDateTime.new(d, t)
+          NaiveDateTime.to_iso8601(ndt)
+        _ -> nil
+      end
+      [
+        %{
+          id: event.id,
+          title: event.name,
+          start: starttime,
+          end: endtime
+        }
+      ]
+    end
+  end
 end
