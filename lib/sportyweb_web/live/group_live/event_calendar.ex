@@ -15,6 +15,7 @@ defmodule SportywebWeb.GroupLive.Calendar do
         page_title={@page_title}
         club={@club}
         events={@events}
+        eventfor={@eventfor}
       />
     </div>
     """
@@ -50,6 +51,7 @@ defmodule SportywebWeb.GroupLive.Calendar do
     {:noreply,
      socket
      |> assign(:page_title, "Veranstaltungskalender")
+     |> assign(:eventfor, "Gruppe #{group.name}")
      |> assign(:group_id, group_id)
      |> assign(:group, group)
      |> assign(:club, club)

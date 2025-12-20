@@ -15,6 +15,7 @@ defmodule SportywebWeb.EquipmentLive.Calendar do
         page_title={@page_title}
         club={@club}
         events={@events}
+        eventfor={@eventfor}
       />
     </div>
     """
@@ -51,6 +52,7 @@ defmodule SportywebWeb.EquipmentLive.Calendar do
     {:noreply,
      socket
      |> assign(:page_title, "Veranstaltungskalender")
+     |> assign(:eventfor, "Equipment #{equipment.name}")
      |> assign(:equipment_id, equipment_id)
      |> assign(:equipment, equipment)
      |> assign(:club, club)

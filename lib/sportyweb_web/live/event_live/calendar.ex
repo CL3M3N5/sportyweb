@@ -14,6 +14,7 @@ defmodule SportywebWeb.EventLive.Calendar do
         page_title={@page_title}
         club={@club}
         events={@events}
+        eventfor={@eventfor}
       />
     </div>
     """
@@ -48,6 +49,7 @@ defmodule SportywebWeb.EventLive.Calendar do
     {:noreply,
      socket
      |> assign(:page_title, "Veranstaltungskalender")
+     |> assign(:eventfor, club.name)
      |> assign(:club_id, club_id)
      |> assign(:club, club)
      |> assign(:view_month, month)

@@ -30,6 +30,7 @@ defmodule SportywebWeb.EventLive.CalendarComponent do
       </.header>
 
       <.card>
+        <div class="text-2xl text-wrap">Termine für <strong><%= @eventfor %></strong></div>
         <.calendar
           id={"club-calendar"}
           phx-update="ignore"
