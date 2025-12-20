@@ -195,7 +195,7 @@ defmodule Sportyweb.Calendar do
   def get_event_with_participants!(id) do
     Event
     |> Repo.get!(id)
-    |> Repo.preload([:organizers, :participants])
+    |> Repo.preload([:organizers, :participants, :waitinglist])
   end
 
   def get_event_contact!(event_id, contact_id, role \\ "participant") do

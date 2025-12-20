@@ -138,3 +138,22 @@
     </p>
   <% end %>
 </.card>
+
+<.header level="2" class="mt-12">
+  Warteliste 
+  <:actions>
+    <.link navigate={~p"/events/#{@event}/waitinglist/new"}>
+      <.button>Wartelisteteilnehmer hinzufügen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@event.waitinglist) do %>
+    <SportywebWeb.EventWaitingListLive.IndexTableComponent.render  waitinglist={@event.waitinglist} event_id={@event.id} />
+  <% else %>
+    <p>
+      Die Veranstaltung hat noch keine Warteliste.
+    </p>
+  <% end %>
+</.card>

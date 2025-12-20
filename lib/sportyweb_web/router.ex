@@ -109,6 +109,9 @@ defmodule SportywebWeb.Router do
       live "/events/:id/participants", ParticipantLive.Index, :index
       live "/events/:id/participants/new", ParticipantLive.NewEdit, :new
 
+      live "/events/:id/waitinglist", EventWaitingListLive.Index, :index
+      live "/events/:id/waitinglist/new", EventWaitingListLive.NewEdit, :new
+
       live "/events/:id/equipments/new", EventLive.EquipmentNew, :new
 
       live "/clubs/:club_id/events/calendar", EventLive.Calendar, :club
@@ -120,6 +123,10 @@ defmodule SportywebWeb.Router do
       # Organizers (Each belongs to an event)
 
       live "/events/:event_id/organizers/:contact_id/delete", EventOrganizerLive.NewEdit, :delete
+
+      # waiting List (Each belongs to an event)
+
+      live "/events/:event_id/waitinglist/:contact_id/delete", EventWaitingListLive.NewEdit, :delete
 
       # Departments (Each belongs to a club)
 

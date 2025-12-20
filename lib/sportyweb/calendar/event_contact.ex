@@ -23,6 +23,6 @@ defmodule Sportyweb.Calendar.EventContact do
       ]
     )
     |> validate_required([:event_id, :contact_id])
-    |> validate_inclusion(:role, ["participant", "organizer"])
+    |> validate_inclusion(:role, ["participant", "organizer","waitinglist"])
   end
 end

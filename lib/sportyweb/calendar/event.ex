@@ -33,8 +33,10 @@ defmodule Sportyweb.Calendar.Event do
     belongs_to :group, Group
     has_many :event_participants, EventContact, where: [role: "participant"], on_delete: :delete_all
     has_many :event_organizers,  EventContact, where: [role: "organizer"], on_delete: :delete_all
+    has_many :event_waitinglist,  EventContact, where: [role: "waitinglist"], on_delete: :delete_all
     has_many :participants, through: [:event_participants, :contact]
     has_many :organizers, through: [:event_organizers, :contact]
+    has_many :waitinglist, through: [:event_waitinglist, :contact]
     has_many :event_locations, EventLocation, on_replace: :delete, on_delete: :delete_all
     has_many :locations, through: [:event_locations, :location]
     many_to_many :contacts, Contact, join_through: EventContact
