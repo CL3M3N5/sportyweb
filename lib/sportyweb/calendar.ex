@@ -110,6 +110,28 @@ defmodule Sportyweb.Calendar do
   end
 
   @doc """
+  Returns a  list of events between start time and end time by department.
+
+  ## Examples
+
+      iex> list_events_by_department(department_id, view_start_time, view_end_time)
+      [%Event{}, ...]
+
+  """
+  def list_events_by_department(department_id, view_start_time, view_end_time) do
+    query = from(e in Event,
+    where: e.department_id == ^department_id,
+    where: e.end_date >= ^view_start_time,
+    where: e.start_date <= ^view_end_time,
+    where: not is_nil(e.start_date),
+    where: not is_nil(e.end_date),
+    select: e
+    )
+
+    Repo.all(query)
+  end
+
+  @doc """
   Gets a single event.
 
   Raises `Ecto.NoResultsError` if the Event does not exist.

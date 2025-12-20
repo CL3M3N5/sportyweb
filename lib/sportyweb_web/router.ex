@@ -144,6 +144,8 @@ defmodule SportywebWeb.Router do
       live "/departments/:id/fees", DepartmentLive.FeeNew, :index
       live "/departments/:id/fees/new", DepartmentLive.FeeNew, :new
 
+      live "/departments/:id/calendar", DepartmentLive.Calendar, :calendar
+
       # Groups (Each belongs to a department)
 
       live "/groups", GroupLive.Index, :index_root
