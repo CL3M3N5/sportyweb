@@ -1,0 +1,27 @@
+<.header>
+  {@page_title} - {@event.name}
+
+  <:actions>
+    <.link navigate={~p"/events/#{@event}"}>
+      <.button>Zurück zur Veranstaltung</.button>
+    </.link>
+    <.link navigate={~p"/events/#{@event}/participants/new"}>
+      <.button>Teilnehmer hinzufügen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+
+<.card>
+  <%= if Enum.any?(@event_participants) do %>
+    <SportywebWeb.ParticipantLive.IndexTableComponent.render  participants={@event_participants} event_id={@event.id} />
+  <% else %>
+    <p>
+      Die Veranstaltung hat noch keine Teilnehmer.
+    </p>
+  <% end %>
+  <br>
+  <.link navigate={~p"/events/#{@event}"}>
+    <.button>Zurück zur Veranstaltung</.button>
+</.link>
+</.card>

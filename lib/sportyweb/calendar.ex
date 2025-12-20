@@ -11,6 +11,7 @@ defmodule Sportyweb.Calendar do
   alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Finance.Fee
   alias Sportyweb.Asset
+  alias Sportyweb.Personal.Contact
 
   @doc """
   Returns a clubs list of events.
@@ -340,5 +341,60 @@ defmodule Sportyweb.Calendar do
         }
       ]
     end
+  end
+
+  @doc """
+  Get a list of 30 participants of an event.
+  ## Examples
+
+      iex> list_event_participants_first30(event)
+      {:ok, %Event{}}
+
+  """
+  def list_event_participants_first30(event_id) do
+
+    Repo.all(
+      from c in Contact,
+      join: ec in EventContact,
+      on: ec.contact_id == c.id,
+      where: ec.event_id == ^event_id and ec.role == "participant",
+      limit: 30,
+      select: c
+    )
+  end
+
+  @doc """
+  Get a list of all participants of an event.
+  ## Examples
+
+      iex> list_event_participants(event)
+      {:ok, %Event{}}
+
+  """
+  def list_event_participants(event_id) do
+
+    Repo.all(
+      from c in Contact,
+      join: ec in EventContact,
+      on: ec.contact_id == c.id,
+      where: ec.event_id == ^event_id and ec.role == "participant",
+      select: c
+    )
+  end
+
+  @doc """
+  Get the number of all participants of an event.
+  ## Examples
+
+      iex> count_event_participants(event)
+      {:ok, %Event{}}
+
+  """
+  def count_event_participants(event_id) do
+    Repo.one(
+      from ec in EventContact,
+      where: ec.event_id == ^event_id and ec.role == "participant",
+      select: count(ec.id)
+    )
   end
 end

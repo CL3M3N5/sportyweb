@@ -126,12 +126,25 @@
     <.link navigate={~p"/events/#{@event}/participants/new"}>
       <.button>Teilnehmer hinzufügen</.button>
     </.link>
+    <.link :if={@participants_count > 30} navigate={~p"/events/#{@event}/participants"}>
+      <.button >Alle {@participants_count} Teilnehmer anzeigen</.button>
+    </.link>
   </:actions>
 </.header>
 
 <.card>
-  <%= if Enum.any?(@event.participants) do %>
-    <SportywebWeb.ParticipantLive.IndexTableComponent.render  participants={@event.participants} event_id={@event.id} />
+  <%= if Enum.any?(@participants_preview) do %>
+    <SportywebWeb.ParticipantLive.IndexTableComponent.render  participants={@participants_preview} event_id={@event.id} />
+
+    <p :if={@participants_count > 30} class="mt-12">
+      Für die Übersichtlichkeit werden hier nur die ersten 30 Teilnehmer angezeigt.
+      <div class="flex justify-end mt-4">
+        <.link navigate={~p"/events/#{@event}/participants"}>
+          <.button >Alle {@participants_count} Teilnehmer anzeigen</.button>
+        </.link>
+      </div>
+    </p>
+    
   <% else %>
     <p>
       Die Veranstaltung hat noch keine Teilnehmer.

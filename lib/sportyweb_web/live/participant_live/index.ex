@@ -2,6 +2,7 @@ defmodule SportywebWeb.ParticipantLive.Index do
   use SportywebWeb, :live_view
 
   alias Sportyweb.Repo
+  alias Sportyweb.Calendar
   alias Sportyweb.Calendar.Event
 
   @impl true
@@ -14,11 +15,6 @@ defmodule SportywebWeb.ParticipantLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
-  defp load_event_with_participants(event_id) do
-    Event
-    |> Repo.get!(event_id)
-    |> Repo.preload(event_participants: [:contact])
-  end
 
   defp apply_action(socket, :index_root, _params) do
     socket
@@ -27,12 +23,12 @@ defmodule SportywebWeb.ParticipantLive.Index do
 
 
   defp apply_action(socket, :index, %{"id" => event_id}) do
-    event = load_event_with_participants(event_id)
+    event = Sportyweb.Calendar.get_event!(event_id)
+    event_participants = Sportyweb.Calendar.list_event_participants(event_id)
 
     socket
     |> assign(:page_title, "Teilnehmer")
     |> assign(:event, event)
-    |> assign(:event_participants, event.participants)
-    |> assign(:contact_options, [])
+    |> assign(:event_participants, event_participants)
   end
 end
