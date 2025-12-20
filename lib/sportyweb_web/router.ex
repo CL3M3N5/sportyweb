@@ -185,6 +185,8 @@ defmodule SportywebWeb.Router do
       live "/locations/:id/fees", LocationLive.FeeNew, :index
       live "/locations/:id/fees/new", LocationLive.FeeNew, :new
 
+      live "/locations/:id/calendar", LocationLive.Calendar, :calendar
+
       # Equipment (Each belongs to a location)
 
       live "/equipment", EquipmentLive.Index, :index_root
