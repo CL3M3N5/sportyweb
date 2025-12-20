@@ -200,6 +200,8 @@ defmodule SportywebWeb.Router do
       live "/equipment/:id/fees", EquipmentLive.FeeNew, :index
       live "/equipment/:id/fees/new", EquipmentLive.FeeNew, :new
 
+      live "/equipment/:id/calendar", EquipmentLive.Calendar, :calendar
+
       # Forecasts
 
       live "/clubs/:club_id/forecasts", ForecastLive.NewEdit, :new
