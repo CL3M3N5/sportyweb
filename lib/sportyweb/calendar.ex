@@ -416,6 +416,25 @@ defmodule Sportyweb.Calendar do
   end
 
   @doc """
+  Creates a event_department (many_to_many).
+  ## Examples
+
+      iex> create_event_department(event, department)
+      {:ok, %EventDepartment{}}
+
+      iex> create_event_department(event, department)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_event_department(%Event{} = event, %Organization.Department{} = department) do
+    Repo.insert(%Sportyweb.Calendar.EventDepartment{
+      event_id: event.id,
+      department_id: department.id
+    })
+  end
+
+  @doc """
   Get a group from an event.
 
   ## Examples
@@ -523,6 +542,41 @@ defmodule Sportyweb.Calendar do
     })
   end
 
+  @doc """
+  Get a equipment for an event.
+
+  ## Examples
+
+      iex> get_event_equipment(event_id, department_id)
+      {:ok, %EventEquipment{}}
+
+      iex> get_event_equipment(event_id, department_id)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def get_event_equipment(event_id, equipment_id) do
+    Repo.get_by(EventEquipment,
+      event_id: event_id,
+      equipment_id: equipment_id
+    )
+  end
+
+    @doc """
+  Deletes a equipment for an event.
+
+  ## Examples
+
+      iex> delete_event_equipment(EventEquipment)
+      {:ok, %EventEquipment{}}
+
+      iex> delete_event_equipment(EventEquipment)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def delete_event_equipment(%EventEquipment{} = ec) do
+    Repo.delete(ec)
+  end
 
   @doc """
   Creates a event_equipment (many_to_many).
@@ -540,25 +594,6 @@ defmodule Sportyweb.Calendar do
     Repo.insert(%Sportyweb.Calendar.EventEquipment{
       event_id: event.id,
       equipment_id: equipment.id
-    })
-  end
-
-  @doc """
-  Creates a event_department (many_to_many).
-  ## Examples
-
-      iex> create_event_department(event, department)
-      {:ok, %EventDepartment{}}
-
-      iex> create_event_department(event, department)
-      {:error, %Ecto.Changeset{}}
-
-  """
-
-  def create_event_department(%Event{} = event, %Organization.Department{} = department) do
-    Repo.insert(%Sportyweb.Calendar.EventDepartment{
-      event_id: event.id,
-      department_id: department.id
     })
   end
 

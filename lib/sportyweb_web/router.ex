@@ -90,6 +90,8 @@ defmodule SportywebWeb.Router do
       live "/clubs/:id/contracts", ClubLive.ContractNew, :index
       live "/clubs/:id/contracts/new", ClubLive.ContractNew, :new
 
+      live "/clubs/:club_id/events/calendar", EventLive.Calendar, :club
+
       # Events (Each belongs to a club)
 
       live "/events", EventLive.Index, :index_root
@@ -113,8 +115,7 @@ defmodule SportywebWeb.Router do
       live "/events/:id/waitinglist/new", EventWaitingListLive.NewEdit, :new
 
       live "/events/:id/equipments/new", EventLive.EquipmentNew, :new
-
-      live "/clubs/:club_id/events/calendar", EventLive.Calendar, :club
+      live "/events/:id/equipments/:equipment_id/delete", EventLive.NewEdit, :deleteequipment
 
       live "/events/:id/departments/new", EventLive.DepartmentNew, :new
       live "/events/:id/departments/:department_id/delete", EventLive.NewEdit, :deletedepartment

@@ -1,4 +1,4 @@
-defmodule SportywebWeb.EquipmentLive.SelectComponent do
+defmodule SportywebWeb.EquipmentLive.EventSelectComponent do
   use SportywebWeb, :live_component
 
   alias Sportyweb.Asset

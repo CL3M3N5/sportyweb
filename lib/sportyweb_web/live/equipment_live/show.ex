@@ -16,6 +16,8 @@ defmodule SportywebWeb.EquipmentLive.Show do
 
     start_date = Date.utc_today()
     events = Calendar.list_events_by_equipment(equipment.id, start_date)
+    require Logger
+    Logger.debug("Found #{length(events)} events for equipment #{equipment.name} (id=#{equipment.id})")
 
     {:noreply,
      socket

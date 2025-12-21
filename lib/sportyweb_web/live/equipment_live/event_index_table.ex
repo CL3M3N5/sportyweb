@@ -1,4 +1,4 @@
-defmodule SportywebWeb.EquipmentLive.IndexTableComponent do
+defmodule SportywebWeb.EquipmentLive.EventIndexTableComponent do
   use SportywebWeb, :html
   import SportywebWeb.CommonHelper
 
@@ -37,7 +37,12 @@ defmodule SportywebWeb.EquipmentLive.IndexTableComponent do
           <% end %>
         </:col>
         <:action :let={equipment}>
-          <.link navigate={~p"/equipment/#{equipment.id}"}>Anzeigen</.link>
+          <.link
+            navigate={~p"/events/#{@event_id}/equipments/#{equipment.id}/delete"}
+            data-confirm="Wirklich entfernen?"
+          >
+            Equipment entfernen
+          </.link>
         </:action>
       </.table>
 

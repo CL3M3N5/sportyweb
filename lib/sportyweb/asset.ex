@@ -252,6 +252,25 @@ defmodule Sportyweb.Asset do
   end
 
   @doc """
+  Returns a locations list of equipment by club.
+
+  ## Examples
+
+      iex> list_equipment_by_club(1)
+      [%Equipment{}, ...]
+
+  """
+  def list_equipment_by_club(club_id) do
+    query = from(e in Equipment,
+    join: loc in Location, on: e.location_id == loc.id,
+    where: loc.club_id == ^club_id,
+    order_by: e.name,
+    preload: [location: loc]
+    )
+    Repo.all(query)
+  end
+
+  @doc """
   Creates a equipment.
 
   ## Examples

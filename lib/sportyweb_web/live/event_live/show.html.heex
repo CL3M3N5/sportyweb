@@ -146,7 +146,7 @@
 
 <.card>
   <%= if Enum.any?(@event.equipment) do %>
-    <SportywebWeb.EquipmentLive.IndexTableComponent.render equipment={@event.equipment} event_id={@event.id} />
+    <SportywebWeb.EquipmentLive.EventIndexTableComponent.render equipment={@event.equipment} event_id={@event.id} />
   <% else %>
     <p>Bisher wurde noch kein Equipment hinzugefügt.</p>
   <% end %>

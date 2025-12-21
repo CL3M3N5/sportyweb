@@ -1,9 +1,6 @@
 defmodule SportywebWeb.EventLive.EquipmentNew do
   use SportywebWeb, :live_view
 
-  import Ecto.Query
-
-  alias Sportyweb.Repo
   alias Sportyweb.Asset
   alias Sportyweb.Calendar
 
@@ -12,7 +9,7 @@ defmodule SportywebWeb.EventLive.EquipmentNew do
     ~H"""
     <div>
       <.live_component
-        module={SportywebWeb.EquipmentLive.SelectComponent}
+        module={SportywebWeb.EquipmentLive.EventSelectComponent}
         id="equipment-select"
         title={@page_title}
         available_equipments={@equipment}
@@ -43,29 +40,16 @@ defmodule SportywebWeb.EventLive.EquipmentNew do
   # There is no "edit" action in this LiveView because that gets handled in the default SportywebWeb.EquipmentLive.NewEdit
   defp apply_action(socket, :new, %{"id" => id}) do
     event = Calendar.get_event!(id, [:club])
+    club_id = event.club_id
+    equipments = Asset.list_equipment_by_club(club_id)
 
-    location_id =
-      from(el in Sportyweb.Calendar.EventLocation,
-      where: el.event_id == ^event.id,
-      select: el.location_id )
-      |> Repo.all()
-      |> Enum.reject(&is_nil/1)
-
-    if location_id == [] do
-      socket
-      |> put_flash(:error, "Für diese Veranstaltung ist kein Standort hinterlegt. Bitte zuerst einen Standort auswählen.")
-      |> push_navigate(to: ~p"/events/#{event.id}")
-    else
-      location_equipments = Asset.list_equipments(location_id, [:location] )
-
-      socket
-      |> assign(
-        :page_title,
-        "Equiqment zur Veranstaltung hinzufügen"
-      )
-      |> assign(:equipment, location_equipments)
-      |> assign(:event, event)
-      |> assign(:club, event.club)
-    end
+    socket
+    |> assign(
+      :page_title,
+      "Equiqment zur Veranstaltung hinzufügen"
+    )
+    |> assign(:equipment, equipments)
+    |> assign(:event, event)
+    |> assign(:club, event.club)
   end
 end

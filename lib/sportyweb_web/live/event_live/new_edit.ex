@@ -94,6 +94,15 @@ defmodule SportywebWeb.EventLive.NewEdit do
     |> push_navigate(to: "/events/#{event_id}")
   end
 
+  defp apply_action(socket, :deleteequipment, %{"equipment_id" => equipment_id, "id" => event_id}) do
+    eventequipment = Calendar.get_event_equipment(event_id, equipment_id)
+    {:ok, _} = Calendar.delete_event_equipment(eventequipment)
+
+    socket
+    |> put_flash(:info, "Equipment erfolgreich vom Event entfernt")
+    |> push_navigate(to: "/events/#{event_id}")
+  end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     event = Calendar.get_event!(id)
