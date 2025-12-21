@@ -86,6 +86,30 @@ defmodule Sportyweb.Calendar do
   end
 
      @doc """
+  Returns a location list of events between start time and end time.
+
+  ## Examples
+
+      iex> list_events_by_location(location_id, view_start_time)
+      [%Event{}, ...]
+
+  """
+  def list_events_by_location(location_id, view_start_time) do
+    query = from(e in Event,
+    join: el in Sportyweb.Calendar.EventLocation,
+    on: el.event_id == e.id,
+    where: el.location_id == ^location_id,
+    where: e.end_date >= ^view_start_time,
+    where: not is_nil(e.start_date),
+    where: not is_nil(e.end_date),
+    select: e
+    )
+
+    Repo.all(query)
+  end
+
+
+     @doc """
   Returns a  list of events between start time and end time by equipment.
 
   ## Examples

@@ -17,12 +17,19 @@ defmodule SportywebWeb.EventLive.CalendarComponent do
       <.header>
         {@page_title}
         <:actions>
-          <.link navigate={~p"/clubs/#{@club}/events"}>
-            <.button>
-              Listenansicht
-            </.button>
-          </.link>
-
+          <%= if @location_id do %>
+            <.link navigate={~p"/locations/#{@location_id}"}>
+              <.button>
+                Listenansicht
+              </.button>
+            </.link>
+            <% else %>
+            <.link navigate={~p"/clubs/#{@club}/events"}>
+              <.button>
+                Listenansicht
+              </.button>
+            </.link>
+          <% end %>
           <.link navigate={~p"/clubs/#{@club}/events/new"}>
             <.button>Veranstaltung erstellen</.button>
           </.link>
@@ -32,7 +39,7 @@ defmodule SportywebWeb.EventLive.CalendarComponent do
       <.card>
         <div class="text-2xl text-wrap">Termine für <strong><%= @eventfor %></strong></div>
         <.calendar
-          id={"club-calendar"}
+          id={"calendar"}
           phx-update="ignore"
           events={@events}
           on_event_click={

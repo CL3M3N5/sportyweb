@@ -16,6 +16,7 @@ defmodule SportywebWeb.LocationLive.Calendar do
         club={@club}
         events={@events}
         eventfor={@eventfor}
+        location_id={@location_id}
       />
     </div>
     """
