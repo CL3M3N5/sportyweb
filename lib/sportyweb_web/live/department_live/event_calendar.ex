@@ -1,7 +1,6 @@
 defmodule SportywebWeb.DepartmentLive.Calendar do
   use SportywebWeb, :live_view
 
-  alias Sportyweb.Asset
   alias Sportyweb.Calendar
   alias Sportyweb.Organization
 
@@ -70,8 +69,6 @@ defmodule SportywebWeb.DepartmentLive.Calendar do
   def handle_event("month_changed", %{"month" => month, "year" => year}, socket) do
     require Logger
     department_id = socket.assigns.department_id
-    department = Organization.get_department!(department_id)
-    club = Organization.get_club!(department.club_id)
 
     start_date = Date.new!(year, month, 1)
     end_date   = Date.add(start_date, 90)

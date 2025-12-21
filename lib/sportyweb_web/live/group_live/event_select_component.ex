@@ -15,9 +15,8 @@ defmodule SportywebWeb.GroupLive.EventSelectComponent do
       <%= if !@available_groups || @available_groups == [] do %>
         <.card>
           Für dieses Event sind derzeit keine Gruppen verfügbar.
-          <:actions>
-            <.cancel_button navigate={@navigate}>Abbrechen</.cancel_button>
-          </:actions>
+
+          <.cancel_button navigate={@navigate}>Abbrechen</.cancel_button>
         </.card>
       <% else %>
         <.card>

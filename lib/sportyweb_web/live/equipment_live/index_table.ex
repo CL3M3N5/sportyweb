@@ -1,7 +1,6 @@
 defmodule SportywebWeb.EquipmentLive.IndexTableComponent do
   use SportywebWeb, :html
   import SportywebWeb.CommonHelper
-  alias Sportyweb.Finance.Fee
 
   attr :equipment, :list, required: true
   attr :event_id, :string, required: true

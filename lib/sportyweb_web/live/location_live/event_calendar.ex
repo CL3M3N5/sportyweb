@@ -72,8 +72,6 @@ defmodule SportywebWeb.LocationLive.Calendar do
   def handle_event("month_changed", %{"month" => month, "year" => year}, socket) do
     require Logger
     location_id = socket.assigns.location_id
-    location = Asset.get_location!(location_id)
-    club = Organization.get_club!(location.club_id)
 
     start_date = Date.new!(year, month, 1)
     end_date   = Date.add(start_date, 90)
@@ -86,7 +84,6 @@ defmodule SportywebWeb.LocationLive.Calendar do
       |> Enum.filter(& &1.start_date)
       |> Enum.flat_map(&Sportyweb.Calendar.get_calendar_event/1)
     Logger.debug("events sample: #{inspect(Enum.take(events, 3))}")
-
 
     {:noreply,
     socket

@@ -15,9 +15,7 @@ defmodule SportywebWeb.EquipmentLive.SelectComponent do
       <%= if !@available_equipments || @available_equipments == [] do %>
         <.card>
           Für dieses Event sind derzeit keine Equipments verfügbar.
-          <:actions>
             <.cancel_button navigate={@navigate}>Abbrechen</.cancel_button>
-          </:actions>
         </.card>
       <% else %>
         <.card>

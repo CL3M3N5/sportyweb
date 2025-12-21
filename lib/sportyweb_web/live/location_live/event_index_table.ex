@@ -1,9 +1,8 @@
 defmodule SportywebWeb.LocationLive.EventIndexTableComponent do
   use SportywebWeb, :html
   import SportywebWeb.CommonHelper
-  alias Sportyweb.Asset.Location
 
-  attr :location, :list, required: true
+  attr :locations, :list, required: true
   attr :event_id, :string, required: true
 
   def render(assigns) do

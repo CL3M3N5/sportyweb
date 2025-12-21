@@ -1,9 +1,8 @@
 defmodule SportywebWeb.DepartmentLive.EventIndexTableComponent do
   use SportywebWeb, :html
   import SportywebWeb.CommonHelper
-  alias Sportyweb.Organization.Department
 
-  attr :department, :list, required: true
+  attr :departments, :list, required: true
   attr :event_id, :string, required: true
 
   def render(assigns) do

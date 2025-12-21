@@ -74,11 +74,6 @@ defmodule SportywebWeb.EquipmentLive.Calendar do
   def handle_event("month_changed", %{"month" => month, "year" => year}, socket) do
     require Logger
     equipment_id = socket.assigns.equipment_id
-    equipment = Asset.get_equipment!(equipment_id)
-    location_id = equipment.location_id
-    location = Asset.get_location!(location_id)
-    club = Organization.get_club!(location.club_id)
-
 
     start_date = Date.new!(year, month, 1)
     end_date   = Date.add(start_date, 90)

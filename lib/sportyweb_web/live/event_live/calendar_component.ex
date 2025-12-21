@@ -2,8 +2,6 @@ defmodule SportywebWeb.EventLive.CalendarComponent do
   use SportywebWeb, :live_component
 
   alias Phoenix.LiveView.JS
-  alias Sportyweb.Calendar
-  alias Sportyweb.Calendar.Event
 
   @impl true
   def update(assigns, socket) do

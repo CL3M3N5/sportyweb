@@ -1,10 +1,6 @@
 defmodule SportywebWeb.ParticipantLive.Index do
   use SportywebWeb, :live_view
 
-  alias Sportyweb.Repo
-  alias Sportyweb.Calendar
-  alias Sportyweb.Calendar.Event
-
   @impl true
   def mount(_params, _session, socket) do
     {:ok, assign(socket, :club_navigation_current_item, :contacts)}

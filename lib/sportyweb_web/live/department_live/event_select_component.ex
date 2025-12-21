@@ -15,9 +15,7 @@ defmodule SportywebWeb.DepartmentLive.EventSelectComponent do
       <%= if !@available_departments || @available_departments == [] do %>
         <.card>
           Für dieses Event sind derzeit keine Abteilungen verfügbar.
-          <:actions>
-            <.cancel_button navigate={@navigate}>Abbrechen</.cancel_button>
-          </:actions>
+          <.cancel_button navigate={@navigate}>Abbrechen</.cancel_button>
         </.card>
       <% else %>
         <.card>

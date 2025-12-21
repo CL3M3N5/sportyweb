@@ -1,7 +1,6 @@
 defmodule SportywebWeb.GroupLive.Calendar do
   use SportywebWeb, :live_view
 
-  alias Sportyweb.Asset
   alias Sportyweb.Calendar
   alias Sportyweb.Organization
 

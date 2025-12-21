@@ -1,14 +1,8 @@
 defmodule SportywebWeb.EventLive.DepartmentNew do
   use SportywebWeb, :live_view
 
-  import Ecto.Query
-
-  alias Sportyweb.Repo
-  alias Sportyweb.Asset
   alias Sportyweb.Calendar
-  alias Sportyweb.Calendar.Event
   alias Sportyweb.Organization
-  alias Sportyweb.Organization.DepartmentEvent
 
   @impl true
   def render(assigns) do

@@ -2,12 +2,10 @@ defmodule SportywebWeb.EventLive.IndexTableComponent do
   use SportywebWeb, :html
   import SportywebWeb.CommonHelper
 
-  alias Sportyweb.Calendar
   alias Sportyweb.Calendar.Event
 
   attr :events, :list, required: true
 
-  @impl true
   def render(assigns) do
     ~H"""
       <div>

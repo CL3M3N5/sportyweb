@@ -15,9 +15,7 @@ defmodule SportywebWeb.LocationLive.EventSelectComponent do
       <%= if !@available_locations || @available_locations == [] do %>
         <.card>
           Für dieses Event sind derzeit keine Standorte verfügbar.
-          <:actions>
             <.cancel_button navigate={@navigate}>Abbrechen</.cancel_button>
-          </:actions>
         </.card>
       <% else %>
         <.card>

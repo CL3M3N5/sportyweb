@@ -5,7 +5,6 @@ defmodule SportywebWeb.EventLive.FormComponent do
   alias Sportyweb.Asset
   alias Sportyweb.Calendar
   alias Sportyweb.Calendar.Event
-  alias Sportyweb.Organization
 
   @impl true
   def render(assigns) do

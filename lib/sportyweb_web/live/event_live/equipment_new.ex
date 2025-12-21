@@ -6,7 +6,6 @@ defmodule SportywebWeb.EventLive.EquipmentNew do
   alias Sportyweb.Repo
   alias Sportyweb.Asset
   alias Sportyweb.Calendar
-  alias Sportyweb.Calendar.Event
 
   @impl true
   def render(assigns) do
