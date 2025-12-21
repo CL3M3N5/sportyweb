@@ -17,19 +17,11 @@ defmodule SportywebWeb.EventLive.CalendarComponent do
       <.header>
         {@page_title}
         <:actions>
-          <%= if @location_id do %>
-            <.link navigate={~p"/locations/#{@location_id}"}>
-              <.button>
-                Listenansicht
-              </.button>
-            </.link>
-            <% else %>
-            <.link navigate={~p"/clubs/#{@club}/events"}>
-              <.button>
-                Listenansicht
-              </.button>
-            </.link>
-          <% end %>
+          <.link navigate={@linktolistview}>
+            <.button>
+              Listenansicht
+            </.button>
+          </.link>
           <.link navigate={~p"/clubs/#{@club}/events/new"}>
             <.button>Veranstaltung erstellen</.button>
           </.link>

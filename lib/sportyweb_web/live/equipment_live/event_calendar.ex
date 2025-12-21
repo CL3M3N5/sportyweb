@@ -16,6 +16,7 @@ defmodule SportywebWeb.EquipmentLive.Calendar do
         club={@club}
         events={@events}
         eventfor={@eventfor}
+        linktolistview={@linktolistview}
       />
     </div>
     """
@@ -53,6 +54,7 @@ defmodule SportywebWeb.EquipmentLive.Calendar do
      socket
      |> assign(:page_title, "Veranstaltungskalender")
      |> assign(:eventfor, "Equipment #{equipment.name}")
+     |> assign(:linktolistview, ~p"/equipment/#{equipment_id}")
      |> assign(:equipment_id, equipment_id)
      |> assign(:equipment, equipment)
      |> assign(:club, club)

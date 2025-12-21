@@ -58,3 +58,23 @@
     <p>Bisher wurde noch keine equipmentspezifische Gebühr erstellt.</p>
   <% end %>
 </.card>
+
+<.header level="2" class="mt-12">
+  Veranstaltungen
+  <:actions>
+    <.link navigate={~p"/equipment/#{@equipment}/calendar"}>
+      <.button>Kalenderansicht</.button>
+    </.link>
+    <.link navigate={~p"/clubs/#{@club}/events/new"}>
+      <.button>Veranstaltung erstellen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@events) do %>
+    <SportywebWeb.EventLive.IndexTableComponent.render events={@events} />
+  <% else %>
+    <p>Keine aktive Veranstaltung für diesen Equipment vorhanden.</p>
+  <% end %>
+</.card>
