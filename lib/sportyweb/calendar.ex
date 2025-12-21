@@ -9,9 +9,11 @@ defmodule Sportyweb.Calendar do
   alias Sportyweb.Calendar.Event
   alias Sportyweb.Calendar.EventFee
   alias Sportyweb.Calendar.EventContact
+  alias Sportyweb.Calendar.EventDepartment
   alias Sportyweb.Finance.Fee
   alias Sportyweb.Asset
   alias Sportyweb.Personal.Contact
+  alias Sportyweb.Organization
 
   @doc """
   Returns a clubs list of events.
@@ -337,6 +339,18 @@ defmodule Sportyweb.Calendar do
     |> Repo.preload([:organizers, :participants, :waitinglist])
   end
 
+  @doc """
+  Get a conact from an event.
+
+  ## Examples
+
+      iex> get_event_contact(event_id, contact_id, role)
+      {:ok, %Event{}}
+
+      iex> get_event_contact(event_id, contact_id, role)
+      {:error, %Ecto.Changeset{}}
+
+  """
   def get_event_contact!(event_id, contact_id, role \\ "participant") do
     Repo.get_by!(EventContact,
       event_id: event_id,
@@ -345,9 +359,59 @@ defmodule Sportyweb.Calendar do
     )
   end
 
+  @doc """
+  Deletes a conact from an event.
+
+  ## Examples
+
+      iex> delete_event_contact(EventContact)
+      {:ok, %Event{}}
+
+      iex> delete_event_contact(EventContact)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
   def delete_event_contact(%EventContact{} = ec) do
     Repo.delete(ec)
   end
+
+  @doc """
+  Get a conact from an event.
+
+  ## Examples
+
+      iex> get_event_contact(event_id, department_id)
+      {:ok, %Event{}}
+
+      iex> get_event_contact(event_id, department_id)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def get_event_department(event_id, department_id) do
+    Repo.get_by(EventDepartment,
+      event_id: event_id,
+      department_id: department_id
+    )
+  end
+
+    @doc """
+  Deletes a department from an event.
+
+  ## Examples
+
+      iex> delete_event_department(EventDepartment)
+      {:ok, %Event{}}
+
+      iex> delete_event_department(EventDepartment)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def delete_event_department(%EventDepartment{} = ec) do
+    Repo.delete(ec)
+  end
+
 
   @doc """
   Creates a event_equipment (many_to_many).
@@ -365,6 +429,25 @@ defmodule Sportyweb.Calendar do
     Repo.insert(%Sportyweb.Calendar.EventEquipment{
       event_id: event.id,
       equipment_id: equipment.id
+    })
+  end
+
+  @doc """
+  Creates a event_department (many_to_many).
+  ## Examples
+
+      iex> create_event_department(event, department)
+      {:ok, %EventDepartment{}}
+
+      iex> create_event_department(event, department)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_event_department(%Event{} = event, %Organization.Department{} = department) do
+    Repo.insert(%Sportyweb.Calendar.EventDepartment{
+      event_id: event.id,
+      department_id: department.id
     })
   end
 

@@ -49,7 +49,6 @@ defmodule SportywebWeb.EventLive.NewEdit do
   defp apply_action(socket, :new, %{"club_id" => club_id}) do
     club = Organization.get_club!(club_id)
     venue_type = socket.assigns[:venue_type] || nil
-    department_id = socket.assigns[:department_id] || nil
     group_id = socket.assigns[:group_id] || nil
 
     socket
@@ -58,7 +57,6 @@ defmodule SportywebWeb.EventLive.NewEdit do
       club_id: club.id,
       club: club,
       venue_type: venue_type,
-      department_id: department_id,
       group_id: group_id,
       event_locations: [%Location{}],
       postal_addresses: [%PostalAddress{}],
@@ -79,4 +77,15 @@ defmodule SportywebWeb.EventLive.NewEdit do
      |> put_flash(:info, "Veranstaltung erfolgreich gelöscht")
      |> push_navigate(to: "/clubs/#{event.club_id}/events")}
   end
+
+  @impl true
+  defp apply_action(socket, :deletedepartment, %{"department_id" => department_id, "id" => event_id}) do
+    eventdepartment = Calendar.get_event_department(event_id, department_id)
+    {:ok, _} = Calendar.delete_event_department(eventdepartment)
+
+    socket
+    |> put_flash(:info, "Abteilung erfolgreich vom Event entfernt")
+    |> push_navigate(to: "/events/#{event_id}")
+  end
+
 end

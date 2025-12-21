@@ -85,6 +85,23 @@
 </.card>
 
 <.header level="2" class="mt-12">
+  Abteilung
+  <:actions>
+    <.link navigate={~p"/events/#{@event}/departments/new"}>
+      <.button>Abteilung hinzufügen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@event.departments) do %>
+    <SportywebWeb.DepartmentLive.EventIndexTableComponent.render departments={@event.departments} event_id={@event.id} />
+  <% else %>
+    <p>Bisher wurde noch keine Abteilung hinzugefügt.</p>
+  <% end %>
+</.card>
+
+<.header level="2" class="mt-12">
   Equipment
   <:actions>
     <.link navigate={~p"/events/#{@event}/equipments/new"}>

@@ -115,6 +115,7 @@ defmodule SportywebWeb.EventLive.FormComponent do
                         </label>
 
                       </div>
+                      <!--
                       <br>
                       <div class="flex flex-col gap-2">
                         <label>
@@ -149,6 +150,7 @@ defmodule SportywebWeb.EventLive.FormComponent do
                           im Monat
                         </label>
                       </div>
+                      -->
                     </div>
                   <% end %>
               <% end %>
@@ -263,38 +265,6 @@ defmodule SportywebWeb.EventLive.FormComponent do
                 </div>
               <% end %>
             </.input_grid>
-
-            <.input_grid class="pt-6">
-              <div class="col-span-12">
-                <.input
-                  field={@form[:department_id]}
-                  type="select"
-                  prompt="Keine Abteilung"
-                  label="Abteilung"
-                  options={
-                    Organization.list_departments(@event.club_id)
-                    |> Enum.map(&{&1.name, &1.id})
-                  }
-                />
-              </div>
-            </.input_grid>
-
-            <%= if @department_id do %>
-            <.input_grid class="pt-6">
-              <div class="col-span-12">
-                <.input
-                  field={@form[:group_id]}
-                  type="select"
-                  prompt="Keine Gruppe"
-                  label="Gruppe"
-                   options={
-                    Organization.list_groups(@department_id)
-                    |> Enum.map(&{&1.name, &1.id})
-                  }
-                />
-              </div>
-            </.input_grid>
-            <% end %>
 
 
             <.input_grid class="pt-6">
