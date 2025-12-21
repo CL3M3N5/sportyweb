@@ -22,6 +22,7 @@ defmodule SportywebWeb.EventLive.Show do
         :organizers,
         :waitinglist,
         :departments,
+        :groups,
         :equipment,
         equipment: :fees,
         fees: :internal_events

@@ -102,6 +102,23 @@
 </.card>
 
 <.header level="2" class="mt-12">
+  Gruppe
+  <:actions>
+    <.link navigate={~p"/events/#{@event}/groups/new"}>
+      <.button>Gruppe hinzufügen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@event.groups) do %>
+    <SportywebWeb.GroupLive.EventIndexTableComponent.render groups={@event.groups} event_id={@event.id} />
+  <% else %>
+    <p>Bisher wurde noch keine Gruppe hinzugefügt.</p>
+  <% end %>
+</.card>
+
+<.header level="2" class="mt-12">
   Equipment
   <:actions>
     <.link navigate={~p"/events/#{@event}/equipments/new"}>

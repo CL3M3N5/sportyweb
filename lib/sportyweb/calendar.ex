@@ -10,6 +10,8 @@ defmodule Sportyweb.Calendar do
   alias Sportyweb.Calendar.EventFee
   alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Calendar.EventDepartment
+  alias Sportyweb.Calendar.EventGroup
+  alias Sportyweb.Calendar.EventEquipment
   alias Sportyweb.Finance.Fee
   alias Sportyweb.Asset
   alias Sportyweb.Personal.Contact
@@ -377,14 +379,14 @@ defmodule Sportyweb.Calendar do
   end
 
   @doc """
-  Get a conact from an event.
+  Get a department for an event.
 
   ## Examples
 
-      iex> get_event_contact(event_id, department_id)
+      iex> get_event_department(event_id, department_id)
       {:ok, %Event{}}
 
-      iex> get_event_contact(event_id, department_id)
+      iex> get_event_department(event_id, department_id)
       {:error, %Ecto.Changeset{}}
 
   """
@@ -396,7 +398,7 @@ defmodule Sportyweb.Calendar do
   end
 
     @doc """
-  Deletes a department from an event.
+  Deletes a department for an event.
 
   ## Examples
 
@@ -412,6 +414,59 @@ defmodule Sportyweb.Calendar do
     Repo.delete(ec)
   end
 
+  @doc """
+  Get a group from an event.
+
+  ## Examples
+
+      iex> get_event_group(event_id, group_id)
+      {:ok, %Event{}}
+
+      iex> get_event_group(event_id, group_id)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def get_event_group(event_id, group_id) do
+    Repo.get_by(EventGroup,
+      event_id: event_id,
+      group_id: group_id
+    )
+  end
+
+    @doc """
+  Deletes a group from an event.
+
+  ## Examples
+
+      iex> delete_event_group(EventGroup)
+      {:ok, %Event{}}
+
+      iex> delete_event_group(EventGroup)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def delete_event_group(%EventGroup{} = ec) do
+    Repo.delete(ec)
+  end
+
+  @doc """
+  Creates a event_group (many_to_many).
+  ## Examples
+      create_event_group(event, group)
+      {:ok, %EventGroup{}}
+
+      iex> create_event_group(event, group)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_event_group(%Event{} = event, %Organization.Group{} = group) do
+    Repo.insert(%Sportyweb.Calendar.EventGroup{
+      event_id: event.id,
+      group_id: group.id
+    })
+  end
 
   @doc """
   Creates a event_equipment (many_to_many).

@@ -119,6 +119,9 @@ defmodule SportywebWeb.Router do
       live "/events/:id/departments/new", EventLive.DepartmentNew, :new
       live "/events/:id/departments/:department_id/delete", EventLive.NewEdit, :deletedepartment
 
+      live "/events/:id/groups/new", EventLive.GroupNew, :new
+      live "/events/:id/groups/:group_id/delete", EventLive.NewEdit, :deletegroup
+
       # Participants (Each belongs to an event)
 
       live "/events/:event_id/participants/:contact_id/delete", ParticipantLive.NewEdit, :delete

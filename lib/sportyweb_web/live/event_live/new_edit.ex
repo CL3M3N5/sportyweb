@@ -88,4 +88,14 @@ defmodule SportywebWeb.EventLive.NewEdit do
     |> push_navigate(to: "/events/#{event_id}")
   end
 
+  @impl true
+  defp apply_action(socket, :deletegroup, %{"group_id" => group_id, "id" => event_id}) do
+    eventgroup = Calendar.get_event_group(event_id, group_id)
+    {:ok, _} = Calendar.delete_event_group(eventgroup)
+
+    socket
+    |> put_flash(:info, "Gruppe erfolgreich vom Event entfernt")
+    |> push_navigate(to: "/events/#{event_id}")
+  end
+
 end

@@ -360,6 +360,24 @@ defmodule Sportyweb.Organization do
   end
 
   @doc """
+  Returns a departments list of groups by club.
+
+  ## Examples
+
+      iex> list_groups(1)
+      [%Group{}, ...]
+
+  """
+  def list_groups_by_club(club_id) do
+    query = from(g in Group,
+    join: d in Department,
+    on: g.department_id == d.id,
+    where: d.club_id == ^club_id,
+    order_by: g.name)
+    Repo.all(query)
+  end
+
+  @doc """
   Gets a single group.
 
   Raises `Ecto.NoResultsError` if the Group does not exist.
