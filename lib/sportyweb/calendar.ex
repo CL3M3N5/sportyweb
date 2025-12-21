@@ -11,6 +11,7 @@ defmodule Sportyweb.Calendar do
   alias Sportyweb.Calendar.EventContact
   alias Sportyweb.Calendar.EventDepartment
   alias Sportyweb.Calendar.EventGroup
+  alias Sportyweb.Calendar.EventLocation
   alias Sportyweb.Calendar.EventEquipment
   alias Sportyweb.Finance.Fee
   alias Sportyweb.Asset
@@ -467,6 +468,61 @@ defmodule Sportyweb.Calendar do
       group_id: group.id
     })
   end
+
+   @doc """
+  Get a location from an event.
+
+  ## Examples
+
+      iex> get_event_location(event_id, location_id)
+      {:ok, %Event{}}
+
+      iex> get_event_location(event_id, location_id)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def get_event_location(event_id, location_id) do
+    Repo.get_by(EventLocation,
+      event_id: event_id,
+      location_id: location_id
+    )
+  end
+
+    @doc """
+  Deletes a location from an event.
+
+  ## Examples
+
+      iex> delete_event_location(EventLocation)
+      {:ok, %Event{}}
+
+      iex> delete_event_location(EventLocation)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def delete_event_location(%EventLocation{} = ec) do
+    Repo.delete(ec)
+  end
+
+  @doc """
+  Creates a event_location (many_to_many).
+  ## Examples
+      create_event_location(event, location)
+      {:ok, %EventLocation{}}
+
+      iex> create_event_location(event, location)
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_event_location(%Event{} = event, %Asset.Location{} = location) do
+    Repo.insert(%Sportyweb.Calendar.EventLocation{
+      event_id: event.id,
+      location_id: location.id
+    })
+  end
+
 
   @doc """
   Creates a event_equipment (many_to_many).

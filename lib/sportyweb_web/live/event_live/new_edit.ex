@@ -67,6 +67,33 @@ defmodule SportywebWeb.EventLive.NewEdit do
     |> assign(:club, club)
   end
 
+  defp apply_action(socket, :deletedepartment, %{"department_id" => department_id, "id" => event_id}) do
+    eventdepartment = Calendar.get_event_department(event_id, department_id)
+    {:ok, _} = Calendar.delete_event_department(eventdepartment)
+
+    socket
+    |> put_flash(:info, "Abteilung erfolgreich vom Event entfernt")
+    |> push_navigate(to: "/events/#{event_id}")
+  end
+
+  defp apply_action(socket, :deletegroup, %{"group_id" => group_id, "id" => event_id}) do
+    eventgroup = Calendar.get_event_group(event_id, group_id)
+    {:ok, _} = Calendar.delete_event_group(eventgroup)
+
+    socket
+    |> put_flash(:info, "Gruppe erfolgreich vom Event entfernt")
+    |> push_navigate(to: "/events/#{event_id}")
+  end
+
+  defp apply_action(socket, :deletelocation, %{"location_id" => location_id, "id" => event_id}) do
+    eventlocation = Calendar.get_event_location(event_id, location_id)
+    {:ok, _} = Calendar.delete_event_location(eventlocation)
+
+    socket
+    |> put_flash(:info, "Standort erfolgreich vom Event entfernt")
+    |> push_navigate(to: "/events/#{event_id}")
+  end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     event = Calendar.get_event!(id)
@@ -77,25 +104,4 @@ defmodule SportywebWeb.EventLive.NewEdit do
      |> put_flash(:info, "Veranstaltung erfolgreich gelöscht")
      |> push_navigate(to: "/clubs/#{event.club_id}/events")}
   end
-
-  @impl true
-  defp apply_action(socket, :deletedepartment, %{"department_id" => department_id, "id" => event_id}) do
-    eventdepartment = Calendar.get_event_department(event_id, department_id)
-    {:ok, _} = Calendar.delete_event_department(eventdepartment)
-
-    socket
-    |> put_flash(:info, "Abteilung erfolgreich vom Event entfernt")
-    |> push_navigate(to: "/events/#{event_id}")
-  end
-
-  @impl true
-  defp apply_action(socket, :deletegroup, %{"group_id" => group_id, "id" => event_id}) do
-    eventgroup = Calendar.get_event_group(event_id, group_id)
-    {:ok, _} = Calendar.delete_event_group(eventgroup)
-
-    socket
-    |> put_flash(:info, "Gruppe erfolgreich vom Event entfernt")
-    |> push_navigate(to: "/events/#{event_id}")
-  end
-
 end

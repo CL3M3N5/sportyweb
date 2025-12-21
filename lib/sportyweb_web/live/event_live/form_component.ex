@@ -305,7 +305,6 @@ defmodule SportywebWeb.EventLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:department_id, event.department_id)
      |> assign(:venue_type, event.venue_type)
      |> assign_new(:form, fn ->
        to_form(Calendar.change_event(event))
@@ -319,7 +318,6 @@ defmodule SportywebWeb.EventLive.FormComponent do
     {:noreply,
      socket
      |> assign(:venue_type, get_field(changeset, :venue_type))
-     |> assign(:department_id, get_field(changeset, :department_id))
      |> assign(form: to_form(changeset, action: :validate))}
   end
 

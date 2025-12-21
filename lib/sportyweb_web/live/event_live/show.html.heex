@@ -114,7 +114,24 @@
   <%= if Enum.any?(@event.groups) do %>
     <SportywebWeb.GroupLive.EventIndexTableComponent.render groups={@event.groups} event_id={@event.id} />
   <% else %>
-    <p>Bisher wurde noch keine Gruppe hinzugefügt.</p>
+    <p>Bisher wurden noch keine Gruppen hinzugefügt.</p>
+  <% end %>
+</.card>
+
+<.header level="2" class="mt-12">
+  Standorte
+  <:actions>
+    <.link navigate={~p"/events/#{@event}/locations/new"}>
+      <.button>Standort hinzufügen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@event.locations) do %>
+    <SportywebWeb.LocationLive.EventIndexTableComponent.render locations={@event.locations} event_id={@event.id} />
+  <% else %>
+    <p>Bisher wurden noch keine Standorte hinzugefügt.</p>
   <% end %>
 </.card>
 
@@ -131,7 +148,7 @@
   <%= if Enum.any?(@event.equipment) do %>
     <SportywebWeb.EquipmentLive.IndexTableComponent.render equipment={@event.equipment} event_id={@event.id} />
   <% else %>
-    <p>Bisher wurde noch keine Equipment hinzugefügt.</p>
+    <p>Bisher wurde noch kein Equipment hinzugefügt.</p>
   <% end %>
 </.card>
 

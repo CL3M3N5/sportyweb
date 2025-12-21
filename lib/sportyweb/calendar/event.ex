@@ -4,6 +4,7 @@ defmodule Sportyweb.Calendar.Event do
   import SportywebWeb.CommonValidations
 
   alias Sportyweb.Asset.Equipment
+  alias Sportyweb.Asset.Location
   alias Sportyweb.Calendar.EventDepartment
   alias Sportyweb.Calendar.EventEmail
   alias Sportyweb.Calendar.EventEquipment
@@ -29,6 +30,7 @@ defmodule Sportyweb.Calendar.Event do
   @foreign_key_type :binary_id
   schema "events" do
     belongs_to :club, Club
+    belongs_to :department, Department
     belongs_to :group, Group
     has_many :event_participants, EventContact, where: [role: "participant"], on_delete: :delete_all
     has_many :event_organizers,  EventContact, where: [role: "organizer"], on_delete: :delete_all
@@ -37,13 +39,13 @@ defmodule Sportyweb.Calendar.Event do
     has_many :organizers, through: [:event_organizers, :contact]
     has_many :waitinglist, through: [:event_waitinglist, :contact]
     has_many :event_locations, EventLocation, on_replace: :delete, on_delete: :delete_all
-    has_many :locations, through: [:event_locations, :location]
     many_to_many :contacts, Contact, join_through: EventContact
     many_to_many :departments, Department, join_through: EventDepartment
     many_to_many :emails, Email, join_through: EventEmail
     many_to_many :equipment, Equipment, join_through: EventEquipment
     many_to_many :fees, Fee, join_through: EventFee
     many_to_many :groups, Group, join_through: EventGroup
+    many_to_many :locations, Location, join_through: EventLocation
     many_to_many :notes, Note, join_through: EventNote
     many_to_many :phones, Phone, join_through: EventPhone
     many_to_many :postal_addresses, PostalAddress, join_through: EventPostalAddress
@@ -148,6 +150,7 @@ defmodule Sportyweb.Calendar.Event do
     |> cast_assoc(:emails, required: true)
     |> cast_assoc(:equipment, required: false)
     |> cast_assoc(:groups, required: false)
+    |> cast_assoc(:locations, required: false)
     |> cast_assoc(:notes, required: true)
     |> cast_assoc(:phones, required: true)
     |> validate_required([
