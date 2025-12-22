@@ -13,6 +13,6 @@ defmodule Sportyweb.Repo.Migrations.CreateEventDepartments do
     end
 
     create index(:event_departments, [:event_id])
-    create unique_index(:event_departments, [:department_id])
+    create unique_index(:event_departments, [:event_id, :department_id])
   end
 end

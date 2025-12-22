@@ -11,6 +11,6 @@ defmodule Sportyweb.Repo.Migrations.CreateEventGroups do
     end
 
     create index(:event_groups, [:event_id])
-    create unique_index(:event_groups, [:group_id])
+    create unique_index(:event_groups, [:event_id, :group_id])
   end
 end

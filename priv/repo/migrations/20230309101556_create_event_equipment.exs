@@ -13,6 +13,6 @@ defmodule Sportyweb.Repo.Migrations.CreateEventEquipment do
     end
 
     create index(:event_equipment, [:event_id])
-    create unique_index(:event_equipment, [:equipment_id])
+    create unique_index(:event_equipment, [:event_id, :equipment_id])
   end
 end

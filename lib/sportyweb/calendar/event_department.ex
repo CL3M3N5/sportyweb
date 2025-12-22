@@ -23,6 +23,6 @@ defmodule Sportyweb.Calendar.EventDepartment do
     event_department
     |> cast(attrs, [:event_id, :department_id])
     |> validate_required([:event_id, :department_id])
-    |> unique_constraint(:department_id, name: "event_departments_department_id_index")
+    |> unique_constraint(:department_id, name: "event_departments_event_id_department_id_index")
   end
 end

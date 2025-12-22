@@ -18,6 +18,7 @@ alias Sportyweb.Asset
 alias Sportyweb.Asset.Equipment
 alias Sportyweb.Asset.Location
 alias Sportyweb.Calendar.Event
+alias Sportyweb.Calendar.EventContact
 alias Sportyweb.Finance
 alias Sportyweb.Finance.Fee
 alias Sportyweb.Finance.Subsidy
@@ -110,6 +111,59 @@ defmodule Sportyweb.SeedHelper do
       content: if(:rand.uniform() < 0.7, do: Faker.Lorem.paragraph(), else: "")
     }
   end
+
+  def get_random_period_type do
+    Enum.random(["single", "recurring"])
+  end
+
+  def get_random_occurrence_type do
+    Enum.random(["daily", "weekly", "monthly", "yearly"])
+  end
+
+  def get_random_recurrence_weekdays do
+    Enum.random(["mon", "tue", "wed", "thu", "fri", "sat", "sun"])
+  end
+
+  def get_random_event_time do
+
+    period_type = Sportyweb.SeedHelper.get_random_period_type()
+
+    extra_days =
+      if period_type == "recurring" do
+        Enum.random(7..30)
+      else
+        0
+      end
+
+    occurrence_type = Sportyweb.SeedHelper.get_random_occurrence_type()
+    recurrence_weekdays = Sportyweb.SeedHelper.get_random_recurrence_weekdays()
+    recurrence_monthly_type = "day_of_month"
+    recurrence_monthly_day = Enum.random(1..28)
+
+    days = Enum.random(1..40)
+    dt_start =
+      Faker.DateTime.forward(days)
+
+    duration_minutes = Enum.random(30..240)
+
+    dt_end =
+      NaiveDateTime.add(dt_start, duration_minutes * 60, :second)
+
+    start_date = NaiveDateTime.to_date(dt_start)
+    start_time =
+      NaiveDateTime.to_time(dt_start)
+       |> Time.truncate(:second)
+
+    end_date = NaiveDateTime.to_date(dt_end)
+    end_date = Date.add(end_date, extra_days)
+    end_time =
+      NaiveDateTime.to_time(dt_end)
+        |> Time.truncate(:second)
+
+    {period_type, start_date, end_date, start_time, end_time, occurrence_type, recurrence_weekdays, recurrence_monthly_type, recurrence_monthly_day}
+
+  end
+
 end
 
 ###################################
@@ -1052,8 +1106,18 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
     # Events
 
     locations = Asset.list_locations(club.id)
+    departments = Organization.list_departments(club.id)
+    groups = Organization.list_groups_by_club(club.id)
+    equipment = Asset.list_equipment_by_club(club.id)
+    contact = Personal.list_contacts(club.id)
+
+    require Logger
+    Logger.debug("Seeding Events for Club #{club.name} with #{length(locations)} locations and #{length(departments)} departments.")
 
     for _i <- 0..Enum.random(10..30) do
+
+      {period_type, start_date, end_date, start_time, end_time, occurrence_type, recurrence_weekdays, recurrence_monthly_type, recurrence_monthly_day} = Sportyweb.SeedHelper.get_random_event_time()
+
       event =
         Repo.insert!(%Event{
           club_id: club.id,
@@ -1065,17 +1129,73 @@ Organization.list_clubs(departments: [:fees, groups: :fees])
           maximum_participants: Enum.random(3..40),
           minimum_age_in_years: 0,
           maximum_age_in_years: Enum.random(5..100),
+          start_date: start_date,
+          end_date: end_date,
+          start_time: start_time,
+          end_time: end_time,
+          period_type: period_type,
+          occurrence_type: occurrence_type,
+          recurrence_weekdays: [recurrence_weekdays],
+          recurrence_monthly_type: recurrence_monthly_type,
+          recurrence_monthly_day: recurrence_monthly_day,
           venue_type:
             Event.get_valid_venue_types()
             |> Enum.map(fn venue_type -> venue_type[:value] end)
             |> Enum.random(),
           venue_description: if(:rand.uniform() < 0.65, do: Faker.Lorem.paragraph(), else: ""),
           locations: [locations |> Enum.random()],
+          departments:
+            departments
+              |> Enum.shuffle()
+              |> Enum.take(1),
+          groups:
+            groups
+              |> Enum.shuffle()
+              |> Enum.take(Enum.random(1..2)),
+          equipment:
+            equipment
+              |> Enum.shuffle()
+              |> Enum.take(Enum.random(1..3)),
           postal_addresses: [Sportyweb.SeedHelper.get_random_postal_address()],
           emails: [Sportyweb.SeedHelper.get_random_email()],
           phones: [Sportyweb.SeedHelper.get_random_phone()],
           notes: [Sportyweb.SeedHelper.get_random_note()]
         })
+
+      # Event - Organizer
+
+      organizer = contact |> Enum.random()
+
+      Repo.insert!(%EventContact{
+        event_id: event.id,
+        contact_id: organizer.id,
+        role: "organizer"
+      })
+
+      # Event - Participants
+
+      num_participants = event.maximum_participants
+
+      contact
+      |> Enum.shuffle()
+      |> Enum.take(num_participants)
+      |> Enum.each(fn participant ->
+        Repo.insert!(%EventContact{
+          event_id: event.id,
+          contact_id: participant.id,
+          role: "participant"
+        })
+      end)
+
+      # Event - Waitinglist
+
+      waitlist = contact |> Enum.random()
+
+      Repo.insert!(%EventContact{
+        event_id: event.id,
+        contact_id: waitlist.id,
+        role: "waitinglist"
+      })
 
       # Fees: Specific - Event
 
