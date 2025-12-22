@@ -184,7 +184,7 @@ defmodule SportywebWeb.Router do
 
       live "/contacts/:id", ContactLive.Show, :show
 
-      live "/contacts/:id/calendar", EventLive.Calendar, :contacts
+      live "/contacts/:id/calendar", ContactLive.Calendar, :calendar
 
       # Locations (Each belongs to a club)
 
