@@ -3,7 +3,7 @@ defmodule SportywebWeb.ParticipantLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :club_navigation_current_item, :contacts)}
+    {:ok, assign(socket, :club_navigation_current_item, :calendar)}
   end
 
   @impl true
@@ -19,12 +19,16 @@ defmodule SportywebWeb.ParticipantLive.Index do
 
 
   defp apply_action(socket, :index, %{"id" => event_id}) do
-    event = Sportyweb.Calendar.get_event!(event_id)
+
+    event = Sportyweb.Calendar.get_event!(event_id, [
+        :club
+    ])
     event_participants = Sportyweb.Calendar.list_event_participants(event_id)
 
     socket
     |> assign(:page_title, "Teilnehmer")
     |> assign(:event, event)
     |> assign(:event_participants, event_participants)
+    |> assign(:club, event.club)
   end
 end

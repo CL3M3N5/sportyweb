@@ -105,15 +105,6 @@ defmodule SportywebWeb.Router do
       live "/events/:id/fees", EventLive.FeeNew, :index
       live "/events/:id/fees/new", EventLive.FeeNew, :new
 
-      live "/events/:id/organizers", EventOrganizerLive.Index, :index
-      live "/events/:id/organizers/new", EventOrganizerLive.NewEdit, :new
-
-      live "/events/:id/participants", ParticipantLive.Index, :index
-      live "/events/:id/participants/new", ParticipantLive.NewEdit, :new
-
-      live "/events/:id/waitinglist", EventWaitingListLive.Index, :index
-      live "/events/:id/waitinglist/new", EventWaitingListLive.NewEdit, :new
-
       live "/events/:id/equipments/new", EventLive.EquipmentNew, :new
       live "/events/:id/equipments/:equipment_id/delete", EventLive.NewEdit, :deleteequipment
 
@@ -128,13 +119,22 @@ defmodule SportywebWeb.Router do
 
       # Participants (Each belongs to an event)
 
+      live "/events/:id/participants", ParticipantLive.Index, :index
+      live "/events/:id/participants/new", ParticipantLive.NewEdit, :new
+
       live "/events/:event_id/participants/:contact_id/delete", ParticipantLive.NewEdit, :delete
 
       # Organizers (Each belongs to an event)
 
+      live "/events/:id/organizers", EventOrganizerLive.Index, :index
+      live "/events/:id/organizers/new", EventOrganizerLive.NewEdit, :new
+
       live "/events/:event_id/organizers/:contact_id/delete", EventOrganizerLive.NewEdit, :delete
 
       # waiting List (Each belongs to an event)
+
+      live "/events/:id/waitinglist", EventWaitingListLive.Index, :index
+      live "/events/:id/waitinglist/new", EventWaitingListLive.NewEdit, :new
 
       live "/events/:event_id/waitinglist/:contact_id/delete", EventWaitingListLive.NewEdit, :delete
 
