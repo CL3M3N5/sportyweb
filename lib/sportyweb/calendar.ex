@@ -219,9 +219,34 @@ defmodule Sportyweb.Calendar do
   """
   def list_events_by_group(group_id, view_start_time, view_end_time) do
     query = from(e in Event,
-    where: e.group_id == ^group_id,
+    join: eg in Sportyweb.Calendar.EventGroup,
+    on: eg.event_id == e.id,
+    where: eg.group_id == ^group_id,
     where: e.end_date >= ^view_start_time,
     where: e.start_date <= ^view_end_time,
+    where: not is_nil(e.start_date),
+    where: not is_nil(e.end_date),
+    select: e
+    )
+
+    Repo.all(query)
+  end
+
+    @doc """
+  Returns a list of events by group starts after start view.
+
+  ## Examples
+
+      iex> list_events_by_group(group_id, view_start_time)
+      [%Event{}, ...]
+
+  """
+  def list_events_by_group(group_id, view_start_time) do
+    query = from(e in Event,
+    join: eg in Sportyweb.Calendar.EventGroup,
+    on: eg.event_id == e.id,
+    where: eg.group_id == ^group_id,
+    where: e.end_date >= ^view_start_time,
     where: not is_nil(e.start_date),
     where: not is_nil(e.end_date),
     select: e

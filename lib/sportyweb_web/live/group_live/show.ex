@@ -20,11 +20,14 @@ defmodule SportywebWeb.GroupLive.Show do
         fees: :internal_events
       ])
 
+    events = Sportyweb.Calendar.list_events_by_group(group.id, Date.utc_today())
+
     {:noreply,
      socket
      |> assign(:page_title, "Gruppe: #{group.name}")
      |> assign(:group, group)
      |> assign(:department, group.department)
+     |> assign(:events, events)
      |> assign(:club, group.department.club)}
   end
 end
