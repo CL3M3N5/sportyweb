@@ -105,3 +105,23 @@
     </p>
   <% end %>
 </.card>
+
+<.header level="2" class="mt-12">
+  Veranstaltungen
+  <:actions>
+    <.link navigate={~p"/departments/#{@department}/calendar"}>
+      <.button>Kalenderansicht</.button>
+    </.link>
+    <.link navigate={~p"/clubs/#{@club}/events/new"}>
+      <.button>Veranstaltung erstellen</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.card>
+  <%= if Enum.any?(@events) do %>
+    <SportywebWeb.EventLive.IndexTableComponent.render events={@events} />
+  <% else %>
+    <p>Keine aktive Veranstaltung für diesen Standort vorhanden.</p>
+  <% end %>
+</.card>

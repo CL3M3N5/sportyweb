@@ -21,11 +21,17 @@ defmodule SportywebWeb.DepartmentLive.Show do
         fees: :internal_events
       ])
 
+    start_date = Date.utc_today()
+    events = Sportyweb.Calendar.list_events_by_department(department.id, start_date)
+    require Logger
+    Logger.debug("Found #{length(events)} events for department #{department.name} (id=#{department.id})")
+
     {:noreply,
      socket
      |> assign(:page_title, "Abteilung: #{department.name}")
      |> assign(:department, department)
      |> assign(:club, department.club)
+     |> assign(:events, events)
      |> stream(:groups, department.groups)}
   end
 end

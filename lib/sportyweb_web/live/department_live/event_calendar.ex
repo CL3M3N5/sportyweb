@@ -10,11 +10,12 @@ defmodule SportywebWeb.DepartmentLive.Calendar do
     <div>
       <.live_component
         module={SportywebWeb.EventLive.CalendarComponent}
-        id="club-calendar"
+        id="calendar"
         page_title={@page_title}
         club={@club}
         events={@events}
         eventfor={@eventfor}
+        linktolistview={@linktolistview}
       />
     </div>
     """
@@ -50,6 +51,7 @@ defmodule SportywebWeb.DepartmentLive.Calendar do
      socket
      |> assign(:page_title, "Veranstaltungskalender")
      |> assign(:eventfor, "Abteilung #{department.name}")
+     |> assign(:linktolistview, ~p"/departments/#{department.id}")
      |> assign(:department_id, department_id)
      |> assign(:department, department)
      |> assign(:club, club)
@@ -89,8 +91,5 @@ defmodule SportywebWeb.DepartmentLive.Calendar do
     |> assign(:view_year, year)
     |> assign(:events, events)
     }
-
   end
-
-
 end
