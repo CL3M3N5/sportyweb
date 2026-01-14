@@ -45,15 +45,16 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
       |> Repo.aggregate(:count, :contact_id)
 
     capacity = event.maximum_participants || :infinity
-    maximal_age = event.maximum_age_in_years
-    minimal_age = event.minimum_age_in_years || 0
-    today = DateTime.utc_now()
 
     if current_participants >= capacity do
       socket
       |> put_flash(:error, "Die maximale Teilnehmerzahl für diese Veranstaltung ist bereits erreicht.")
       |> push_navigate(to: "/events/#{event.id}")
     else
+
+      maximal_age = event.maximal_participant_age || 150
+      minimal_age = event.minimal_participant_age || 0
+      today = DateTime.utc_now()
 
       already_ids =
         from(ec in EventContact, where: ec.event_id == ^event.id, select: ec.contact_id)
