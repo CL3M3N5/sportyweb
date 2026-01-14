@@ -57,7 +57,10 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
       today = DateTime.utc_now()
 
       already_ids =
-        from(ec in EventContact, where: ec.event_id == ^event.id, select: ec.contact_id)
+        from(ec in EventContact,
+        where: ec.event_id == ^event.id,
+        where: ec.role == "participant",
+        select: ec.contact_id)
         |> Repo.all()
 
       contact_options =
