@@ -24,6 +24,18 @@ defmodule SportywebWeb.LocationLive.EventIndexTableComponent do
             {format_string_field(locations.description)}
           </div>
         </:col>
+        <:col :let={locations} label="Grundbetrag">
+          <%= for {fee, idx} <- Enum.with_index(locations.fees) do %>
+            <%= if idx > 0, do: ", " %>
+            <%= Money.to_string!(fee.amount, locale: "de") %>
+          <% end %>
+        </:col>
+        <:col :let={locations} label="Einmalzahlung">
+          <%= for {fee, idx} <- Enum.with_index(locations.fees) do %>
+            <%= if idx > 0, do: ", " %>
+            <%= Money.to_string!(fee.amount_one_time, locale: "de") %>
+          <% end %>
+        </:col>
         <:action :let={locations}>
           <.link
             navigate={~p"/events/#{@event_id}/locations/#{locations.id}/delete"}

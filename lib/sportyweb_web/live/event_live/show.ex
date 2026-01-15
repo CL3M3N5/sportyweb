@@ -25,6 +25,7 @@ defmodule SportywebWeb.EventLive.Show do
         :groups,
         :equipment,
         equipment: :fees,
+        locations: :fees,
         fees: :internal_events
       ])
 
