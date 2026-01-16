@@ -204,14 +204,22 @@ defmodule Sportyweb.Calendar.Event do
       :venue_type,
       get_valid_venue_types() |> Enum.map(fn venue_type -> venue_type[:value] end)
     )
-
     |> validate_required_venue_type_condition()
     |> validate_length(:venue_description, max: 20_000)
     |> validate_inclusion(
       :period_type,
       get_valid_period_types() |> Enum.map(fn period_type -> period_type[:value] end)
     )
-
+    |> validate_dates_order(
+      :start_date,
+      :end_date,
+      "Das Enddatum muss zeitlich später oder gleich dem Startdatum sein!"
+    )
+    |> validate_times_order(
+      :start_time,
+      :end_time,
+      "Die Endzeit muss zeitlich später oder gleich der Startzeit sein!"
+    )
     |> validate_recurrence_fields()
     |> create_recurrence_rule()
 

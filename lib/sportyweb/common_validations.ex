@@ -30,6 +30,34 @@ defmodule SportywebWeb.CommonValidations do
   end
 
   @doc """
+  Validates that the time value of field_1 is smaller or equal than field_2.
+  Either field can be nil.
+
+  Takes a custom error message as optional parameter.
+
+  In the example below, the value of the archive_time field
+  must be greater or equal than the value of the creation_time field.
+
+  ## Examples
+
+      changeset
+      |> validate_times_order(:creation_time, :archive_time, "Custom error")
+
+  """
+  def validate_times_order(changeset, field_1, field_2, message \\ "Error!") do
+    field_1_time_value = get_field(changeset, field_1)
+    field_2_time_value = get_field(changeset, field_2)
+
+    if field_1_time_value && field_2_time_value &&
+         Time.compare(field_2_time_value, field_1_time_value) == :lt do
+      changeset
+      |> add_error(field_2, message)
+    else
+      changeset
+    end
+  end
+
+  @doc """
   Validates that the numerical value of field_1 is smaller or equal than field_2.
   Either field can be nil.
 
