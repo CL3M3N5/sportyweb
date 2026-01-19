@@ -52,8 +52,8 @@ defmodule SportywebWeb.ParticipantLive.NewEdit do
       |> push_navigate(to: "/events/#{event.id}")
     else
 
-      maximal_age = event.maximal_participant_age || 150
-      minimal_age = event.minimal_participant_age || 0
+      maximal_age = event.minimum_age_in_years || 150
+      minimal_age = event.maximum_age_in_years || 0
       today = DateTime.utc_now()
 
       already_ids =
