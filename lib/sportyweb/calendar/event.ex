@@ -64,7 +64,7 @@ defmodule Sportyweb.Calendar.Event do
     field :period_type, :string, default: "single"
     field :occurrence_type, :string, default: ""
     field :recurrence_rule, :string, default: ""
-    field :recurrence_exceptions, {:array, :utc_datetime}, default: []
+    field :recurrence_exceptions, :date , default: nil
     field :recurrence_weekdays, {:array, :string}, default: []
     field :recurrence_monthly_type, :string, default: ""
     field :recurrence_monthly_day, :integer, default: nil

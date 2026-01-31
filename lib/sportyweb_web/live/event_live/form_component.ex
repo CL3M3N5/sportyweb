@@ -152,6 +152,16 @@ defmodule SportywebWeb.EventLive.FormComponent do
                       -->
                     </div>
                   <% end %>
+
+                  <div class="col-span-12 md:col-span-12">
+                    <.input
+                      field={@form[:recurrence_exceptions]}
+                      type="date"
+                      label="Ausnahmetag aus der Serie"
+                    />
+                  </div>
+
+
               <% end %>
 
               <div class="col-span-12 md:col-span-6">

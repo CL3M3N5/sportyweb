@@ -769,8 +769,9 @@ defmodule Sportyweb.Calendar do
       Cocktail.Schedule.occurrences(schedule)
       |> Stream.filter(fn %NaiveDateTime{} = start_at ->
         d = NaiveDateTime.to_date(start_at)
-        Date.compare(d, event.start_date) != :lt and Date.compare(d, event.end_date) != :gt
-      end)
+        Date.compare(d, event.start_date) != :lt and Date.compare(d, event.end_date) != :gt and
+        not Enum.member?(List.wrap(event.recurrence_exceptions), d)
+        end)
       |> Stream.map(fn %NaiveDateTime{} = start_at ->
         end_at = NaiveDateTime.add(start_at, e - s, :second)
         %{
@@ -779,8 +780,8 @@ defmodule Sportyweb.Calendar do
           start: NaiveDateTime.to_iso8601(start_at),
           end: NaiveDateTime.to_iso8601(end_at)
         }
-      end)
-    |> Enum.to_list()
+        end)
+      |> Enum.to_list()
 
 
     else
